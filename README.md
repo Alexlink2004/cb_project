@@ -1,16 +1,21 @@
-# cb_project
+# Project Repository for Mexicali City Council Voting App
 
-A new Flutter project.
+This repository contains the code and resources for the desktop, tablet, and TV application developed for the Mexicali City Council. The main objective of this project is to digitize the voting process during council sessions, making it more efficient and streamlined.
 
-## Getting Started
+## Overview
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Key Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Technologies Used
+- Flutter: A cross-platform framework for building beautiful user interfaces.
+- Dart: The programming language used for developing the application logic.
+
+## Contributing
+
+
+## License
+
+
+## Contact
