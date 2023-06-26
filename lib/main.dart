@@ -1,8 +1,12 @@
+import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const VotingSystemApp());
+  runApp(
+    const VotingSystemApp(),
+  );
 }
 
 class VotingSystemApp extends StatelessWidget {
@@ -10,18 +14,24 @@ class VotingSystemApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) {}),
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.black,
+        ),
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        initialRoute: LoginScreen.id,
+        routes: {
+          LoginScreen.id: (_) => const LoginScreen(),
+          AdminView.id: (_) => const AdminView(),
+        },
       ),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      initialRoute: LoginScreen.id,
-      routes: {
-        LoginScreen.id: (context) => const LoginScreen(),
-      },
     );
   }
 }

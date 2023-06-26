@@ -1,3 +1,4 @@
+import 'package:cb_project/debug/debug_panel.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -82,56 +83,65 @@ class LoginScreen extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: SizedBox(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Bienvenido/a',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const Text(
-                        'Ingresa tu codigo',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: 261,
-                        height: 71,
-                        constraints: const BoxConstraints(
-                          maxWidth: 261,
-                          maxHeight: 71,
-                        ),
-                        child: TextField(
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey.shade700,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: 'Ingresar',
-                            hintStyle: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+              child: Stack(
+                children: [
+                  const Positioned(
+                    top: 0,
+                    right: 0,
+                    child: DebugPanel(),
                   ),
-                ),
+                  SizedBox(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Bienvenido/a',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const Text(
+                            'Ingresa tu codigo',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            width: 261,
+                            height: 71,
+                            constraints: const BoxConstraints(
+                              maxWidth: 261,
+                              maxHeight: 71,
+                            ),
+                            child: TextField(
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey.shade700,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                hintText: 'Ingresar',
+                                hintStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
