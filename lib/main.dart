@@ -1,3 +1,4 @@
+import 'package:cb_project/src/auth/admin/controllers/page_controller.dart';
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,9 @@ class VotingSystemApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) {}),
+        ChangeNotifierProvider(
+          create: (_) => AdminPageController(),
+        ),
       ],
       child: MaterialApp(
         theme: ThemeData(

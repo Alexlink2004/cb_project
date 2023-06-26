@@ -92,7 +92,10 @@ class DebugPanel extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          Navigator.pushNamed(context, routeName);
+          Navigator.pushNamed(
+            context,
+            routeName,
+          );
         },
         child: Text(
           buttonText,
