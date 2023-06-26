@@ -1,3 +1,4 @@
+import 'package:cb_project/src/auth/admin/views/components/back_button.dart';
 import 'package:cb_project/src/auth/admin/views/pages/general_data_view.dart';
 import 'package:cb_project/src/auth/admin/views/pages/reports_view.dart';
 import 'package:cb_project/src/auth/admin/views/pages/session_view.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/page_controller.dart';
-import 'components/vertical_menu.dart';
+import 'components/vertical_menu_item.dart';
 
 class AdminView extends StatelessWidget {
   static const id = '/adminDashboard';
@@ -29,24 +30,66 @@ class AdminView extends StatelessWidget {
               decoration: const BoxDecoration(
                 color: Color(0xFF121212),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  VerticalMenuItem(
-                    icon: Icons.settings,
-                    title: 'Datos Generales',
-                    buttonIndex: 0,
+                  const SizedBox(
+                    height: 30,
                   ),
-                  VerticalMenuItem(
-                    icon: Icons.create,
-                    title: 'Sesión',
-                    buttonIndex: 1,
+                  // Expanded(
+                  //   flex: 2,
+                  //   child: Column(
+                  //     children: [
+                  //       Container(
+                  //         width: 50,
+                  //         height: 50,
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.black54,
+                  //           borderRadius: BorderRadius.circular(100),
+                  //         ),
+                  //         child: const Icon(
+                  //           Icons.person,
+                  //           size: 40,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  //       const Text(
+                  //         "Admin",
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                  const Expanded(
+                    flex: 7,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        VerticalMenuItem(
+                          icon: Icons.settings,
+                          title: 'Datos Generales',
+                          buttonIndex: 0,
+                        ),
+                        VerticalMenuItem(
+                          icon: Icons.create,
+                          title: 'Sesión',
+                          buttonIndex: 1,
+                        ),
+                        VerticalMenuItem(
+                          icon: Icons.summarize,
+                          title: 'Ver Reportes',
+                          buttonIndex: 2,
+                        ),
+                      ],
+                    ),
                   ),
-                  VerticalMenuItem(
-                    icon: Icons.summarize,
-                    title: 'Ver Reportes',
-                    buttonIndex: 2,
+                  Expanded(
+                    flex: 1,
+                    child: LogOutButton(),
                   ),
                 ],
               ),

@@ -1,4 +1,7 @@
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
+import 'package:cb_project/src/auth/voting%20users/alderman/views/alderman_view.dart';
+import 'package:cb_project/src/auth/voting%20users/president/views/president_view.dart';
+import 'package:cb_project/src/auth/voting%20users/secretary/views/secretary_view.dart';
 import 'package:flutter/material.dart';
 
 class DebugPanel extends StatelessWidget {
@@ -36,7 +39,7 @@ class DebugPanel extends StatelessWidget {
               _buildButton(
                 context,
                 'Presidente',
-                routeName: '/presidente',
+                routeName: PresidentView.id,
                 color: Colors.grey.withOpacity(0.3),
               ),
             ],
@@ -47,13 +50,13 @@ class DebugPanel extends StatelessWidget {
               _buildButton(
                 context,
                 'Secretario',
-                routeName: '/secretario',
+                routeName: SecretaryView.id,
                 color: Colors.grey.withOpacity(0.5),
               ),
               _buildButton(
                 context,
                 'Regidor',
-                routeName: '/regidor',
+                routeName: AldermanView.id,
                 color: Colors.grey.withOpacity(0.7),
               ),
             ],
