@@ -26,13 +26,13 @@ class _VerticalMenuItemState extends State<VerticalMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    final _pageController = Provider.of<AdminPageController>(context);
+    final pageController = Provider.of<AdminPageController>(context);
     final isActive = widget.isCurrent || _isHovered;
 
     return AspectRatio(
       aspectRatio: 1.0,
       child: GestureDetector(
-        onTap: () => _pageController.index = widget.buttonIndex,
+        onTap: () => pageController.index = widget.buttonIndex,
         child: MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),

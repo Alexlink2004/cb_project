@@ -1,13 +1,82 @@
 import 'package:cb_project/debug/debug_panel.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+import '../server/sockets/sockets.dart';
+
+class LoginHandler extends StatefulWidget {
   static const id = '/login';
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginHandler({Key? key}) : super(key: key);
+
+  @override
+  State<LoginHandler> createState() => _LoginHandlerState();
+}
+
+class _LoginHandlerState extends State<LoginHandler> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    //Socket Client
+    Provider.of<SocketClient>(context).initSocket(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final _socketClient = Provider.of<SocketClient>(context);
+    if (_socketClient.socket.connected){
+      return const LoginScreen();
+    }else{
+      return const  Scaffold(
+        backgroundColor: Color(0xFF121212),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+               Text(
+                'Sistema de votación para cabildo',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+               SizedBox(height: 16),
+               Text(
+                'Esperando a establecer una conexión',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+               SizedBox(height: 16),
+              Flexible(
+                child: SizedBox(
+                  width: 100,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.pacman,
+                    colors:  [Colors.white],
+                    strokeWidth: 2,
+                    backgroundColor: Colors.transparent,
+                    pathBackgroundColor: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+    }
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       body: SafeArea(
         child: Row(

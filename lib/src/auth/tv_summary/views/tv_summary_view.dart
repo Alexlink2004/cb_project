@@ -63,11 +63,11 @@ class TvSummaryView extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
           //CONTENIDO:
-          child: SizedBox.expand(
+          child: const SizedBox.expand(
             child: Center(
               child: SizedBox(
                 width: 800,
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

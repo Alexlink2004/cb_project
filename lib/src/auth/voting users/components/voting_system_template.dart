@@ -71,7 +71,7 @@ class VotingSystemTemplate extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              color: Color(0xFF121212),
+              color: const Color(0xFF121212),
               child: Column(
                 children: [
                   const Text(
@@ -98,7 +98,7 @@ class VotingSystemTemplate extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 "Punto $index",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
