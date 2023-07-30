@@ -1,9 +1,11 @@
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/tv_summary/views/tv_summary_view.dart';
-import 'package:cb_project/src/auth/voting%20users/alderman/views/alderman_view.dart';
-import 'package:cb_project/src/auth/voting%20users/president/views/president_view.dart';
-import 'package:cb_project/src/auth/voting%20users/secretary/views/secretary_view.dart';
+
 import 'package:flutter/material.dart';
+
+import '../src/auth/voting_users/alderman/views/alderman_view.dart';
+import '../src/auth/voting_users/president/views/president_view.dart';
+import '../src/auth/voting_users/secretary/views/secretary_view.dart';
 
 class DebugPanel extends StatelessWidget {
   const DebugPanel({Key? key}) : super(key: key);

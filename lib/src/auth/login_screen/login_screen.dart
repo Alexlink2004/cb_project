@@ -1,9 +1,10 @@
-import 'package:cb_project/debug/debug_panel.dart';
+import 'package:cb_project/src/auth/login_screen/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
-
-import '../server/sockets/sockets.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import '../../../debug/debug_panel.dart';
+import '../../server/sockets/sockets.dart';
 
 class LoginHandler extends StatefulWidget {
   static const id = '/login';
@@ -14,6 +15,10 @@ class LoginHandler extends StatefulWidget {
 }
 
 class _LoginHandlerState extends State<LoginHandler> {
+  final TextEditingController _passwordController = TextEditingController();
+
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -23,17 +28,15 @@ class _LoginHandlerState extends State<LoginHandler> {
 
   @override
   Widget build(BuildContext context) {
-    final _socketClient = Provider.of<SocketClient>(context);
-    if (_socketClient.socket.connected){
-      return const LoginScreen();
-    }else{
-      return const  Scaffold(
+    final socketClient = Provider.of<SocketClient>(context);
+    if (!socketClient.socket.connected) {
+      return const Scaffold(
         backgroundColor: Color(0xFF121212),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               Text(
+              Text(
                 'Sistema de votación para cabildo',
                 style: TextStyle(
                   color: Colors.white,
@@ -41,21 +44,21 @@ class _LoginHandlerState extends State<LoginHandler> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-               SizedBox(height: 16),
-               Text(
+              SizedBox(height: 16),
+              Text(
                 'Esperando a establecer una conexión',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                 ),
               ),
-               SizedBox(height: 16),
+              SizedBox(height: 16),
               Flexible(
                 child: SizedBox(
                   width: 100,
                   child: LoadingIndicator(
                     indicatorType: Indicator.pacman,
-                    colors:  [Colors.white],
+                    colors: [Colors.white],
                     strokeWidth: 2,
                     backgroundColor: Colors.transparent,
                     pathBackgroundColor: Colors.black,
@@ -66,17 +69,23 @@ class _LoginHandlerState extends State<LoginHandler> {
           ),
         ),
       );
-
+    } else {
+      return LoginScreen();
     }
   }
 }
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key});
+  void _handleLogin(BuildContext context, String password) {
+    final _socketClient = Provider.of<SocketClient>(context, listen: false);
+    _socketClient.socket.emit("client:login", password);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final TextEditingController _loginFieldController = Provider.of<LoginController>(context).loginFieldController;
+    return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       body: SafeArea(
         child: Row(
@@ -129,17 +138,17 @@ class LoginScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 10,
                     ),
-                    const Text(
+                    Text(
                       'Sistema de votación para',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                       ),
                     ),
-                    const Text(
+                    Text(
                       'cabildo',
                       style: TextStyle(
                         color: Colors.white,
@@ -153,13 +162,13 @@ class LoginScreen extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Stack(
-                children: [
+                children:  [
                   const Positioned(
                     top: 0,
                     right: 0,
                     child: DebugPanel(),
                   ),
-                  SizedBox(
+                   SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -184,14 +193,16 @@ class LoginScreen extends StatelessWidget {
                           Container(
                             width: 261,
                             height: 71,
-                            constraints: const BoxConstraints(
+                            constraints:const  BoxConstraints(
                               maxWidth: 261,
                               maxHeight: 71,
                             ),
                             child: TextField(
+                              controller: _loginFieldController,
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
+
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.grey.shade700,
@@ -204,6 +215,9 @@ class LoginScreen extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
+                              onSubmitted: (data){
+                                _handleLogin(context, data);
+                              },
                             ),
                           ),
                         ],
