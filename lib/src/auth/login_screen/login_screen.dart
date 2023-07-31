@@ -15,7 +15,7 @@ class LoginHandler extends StatefulWidget {
 }
 
 class _LoginHandlerState extends State<LoginHandler> {
-  final TextEditingController _passwordController = TextEditingController();
+
 
 
 
@@ -30,61 +30,23 @@ class _LoginHandlerState extends State<LoginHandler> {
   Widget build(BuildContext context) {
     final socketClient = Provider.of<SocketClient>(context);
     if (!socketClient.socket.connected) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF121212),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Sistema de votación para cabildo',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Esperando a establecer una conexión',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 16),
-              Flexible(
-                child: SizedBox(
-                  width: 100,
-                  child: LoadingIndicator(
-                    indicatorType: Indicator.pacman,
-                    colors: [Colors.white],
-                    strokeWidth: 2,
-                    backgroundColor: Colors.transparent,
-                    pathBackgroundColor: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      return const LoadingScreen();
     } else {
-      return LoginScreen();
+      return const LoginScreen();
     }
   }
 }
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key});
+  const LoginScreen({super.key});
   void _handleLogin(BuildContext context, String password) {
-    final _socketClient = Provider.of<SocketClient>(context, listen: false);
-    _socketClient.socket.emit("client:login", password);
+    final socketClient = Provider.of<SocketClient>(context, listen: false);
+    socketClient.socket.emit("client:login", password);
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _loginFieldController = Provider.of<LoginController>(context).loginFieldController;
+    final  _loginController = Provider.of<LoginController>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       body: SafeArea(
@@ -198,7 +160,7 @@ class LoginScreen extends StatelessWidget {
                               maxHeight: 71,
                             ),
                             child: TextField(
-                              controller: _loginFieldController,
+                              controller: _loginController.loginFieldController,
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -216,7 +178,7 @@ class LoginScreen extends StatelessWidget {
                                 ),
                               ),
                               onSubmitted: (data){
-                                _handleLogin(context, data);
+                                _handleLogin(context, _loginController.loginFieldController.text);
                               },
                             ),
                           ),
@@ -225,6 +187,53 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Color(0xFF121212),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Sistema de votación para cabildo',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Esperando a establecer una conexión',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 16),
+            Flexible(
+              child: SizedBox(
+                width: 100,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.pacman,
+                  colors: [Colors.white],
+                  strokeWidth: 2,
+                  backgroundColor: Colors.transparent,
+                  pathBackgroundColor: Colors.black,
+                ),
               ),
             ),
           ],

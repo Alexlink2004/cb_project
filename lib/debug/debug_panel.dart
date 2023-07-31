@@ -9,75 +9,81 @@ import '../src/auth/voting_users/secretary/views/secretary_view.dart';
 
 class DebugPanel extends StatelessWidget {
   const DebugPanel({Key? key}) : super(key: key);
+  final bool on = true;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250.666,
-      height: 137,
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const Text(
-            'Debug Panel (No mostrar en release)',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+    if (on){
+      return Container(
+        width: 250,
+        height: 137,
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const Text(
+              'Debug Panel (No mostrar en release)',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.end,
             ),
-            textAlign: TextAlign.end,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _buildButton(
-                context,
-                'Admin',
-                routeName: AdminView.id,
-                color: Colors.grey.withOpacity(0.1),
-              ),
-              _buildButton(
-                context,
-                'Presidente',
-                routeName: PresidentView.id,
-                color: Colors.grey.withOpacity(0.3),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _buildButton(
-                context,
-                'Secretario',
-                routeName: SecretaryView.id,
-                color: Colors.grey.withOpacity(0.5),
-              ),
-              _buildButton(
-                context,
-                'Regidor',
-                routeName: AldermanView.id,
-                color: Colors.grey.withOpacity(0.7),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _buildButton(
-                context,
-                'TV',
-                routeName: TvSummaryView.id,
-                color: Colors.grey.withOpacity(0.9),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildButton(
+                  context,
+                  'Admin',
+                  routeName: AdminView.id,
+                  color: Colors.grey.withOpacity(0.1),
+                ),
+                _buildButton(
+                  context,
+                  'Presidente',
+                  routeName: PresidentView.id,
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildButton(
+                  context,
+                  'Secretario',
+                  routeName: SecretaryView.id,
+                  color: Colors.grey.withOpacity(0.5),
+                ),
+                _buildButton(
+                  context,
+                  'Regidor',
+                  routeName: AldermanView.id,
+                  color: Colors.grey.withOpacity(0.7),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildButton(
+                  context,
+                  'TV',
+                  routeName: TvSummaryView.id,
+                  color: Colors.grey.withOpacity(0.9),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+    else{
+      return SizedBox();
+    }
   }
 
   Widget _buildButton(

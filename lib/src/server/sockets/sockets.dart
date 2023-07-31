@@ -1,9 +1,14 @@
+import 'package:cb_project/src/auth/admin/controllers/general_data_controller.dart';
+import 'package:cb_project/src/auth/admin/models/general_data.dart';
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import '../models/user.dart';
+
 class SocketClient extends ChangeNotifier {
-  static const String socketHost = 'http://localhost:3000';
+  static const String socketHost = 'http://192.168.1.102:3000';
   final IO.Socket _socket = IO.io(socketHost, IO.OptionBuilder().setTransports(['websocket']).build());
 
   IO.Socket get socket => _socket;
@@ -42,19 +47,19 @@ class SocketClient extends ChangeNotifier {
       switch (userRole) {
         case 'Administrador':
         // Redirige a la pantalla del administrador
-          Navigator.pushNamed(context, AdminView.id);
+          Navigator.pushReplacementNamed(context, AdminView.id);
           break;
         case 'Presidente':
         // Redirige a la pantalla del presidente
-          Navigator.pushNamed(context, '/presidente');
+          Navigator.pushReplacementNamed(context, '/presidente');
           break;
         case 'Secretario':
         // Redirige a la pantalla del secretario
-          Navigator.pushNamed(context, '/secretario');
+          Navigator.pushReplacementNamed(context, '/secretario');
           break;
         case 'Regidor':
         // Redirige a la pantalla del regidor
-          Navigator.pushNamed(context, '/regidor');
+          Navigator.pushReplacementNamed(context, '/regidor');
           break;
         default:
 
@@ -72,6 +77,27 @@ class SocketClient extends ChangeNotifier {
         duration: Duration(seconds: 1,),
       ),);
     });
+
+    _socket.on('server:requestgeneraldata', (data) {
+      final GeneralDataProvider _generalDataProvider =
+      Provider.of<GeneralDataProvider>(context, listen: false);
+
+      // Assuming 'data' is a Map containing the 'users' and 'municipalityNumber' keys
+      List<dynamic> usersData = data['users'];
+      debugPrint("Datos de server:requestgeneraldata" + usersData.toString(),);
+      List<User> users = usersData.map((userData) => User.fromJson(userData)).toList();
+
+
+      int municipalityNumber = data['municipalityNumber'];
+
+      _generalDataProvider.generalData =
+          GeneralData(users: users, ayuntamientoNumber: municipalityNumber);
+
+      notifyListeners();
+      debugPrint('Datos generales: $data');
+    });
+
+
 
 
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cb_project/src/auth/admin/controllers/general_data_controller.dart';
 import 'package:cb_project/src/auth/admin/controllers/page_controller.dart';
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/login_screen/login_controller.dart';
@@ -39,6 +40,9 @@ class VotingSystemApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => LoginController(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GeneralDataProvider(),
         ),
       ],
       child: MaterialApp(

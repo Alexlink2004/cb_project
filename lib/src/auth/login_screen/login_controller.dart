@@ -1,26 +1,24 @@
 
-
 import 'package:flutter/material.dart';
 
-class LoginController extends ChangeNotifier{
-  late int _password ;
+class LoginController extends ChangeNotifier {
   late TextEditingController _loginFieldController = TextEditingController();
+  late String _password;
 
-  TextEditingController get loginFieldController{
+  String get password {
+    return _password;
+  }
+
+  set password(String data) {
+    _password = data;
+    // Actualizar el texto del loginFieldController cuando se cambie el password.
+    _loginFieldController.text = data.toString();
+    notifyListeners();
+  }
+
+  TextEditingController get loginFieldController {
     return _loginFieldController;
   }
 
-  set loginFieldController (TextEditingController data){
-    _loginFieldController = data;
-    notifyListeners();
-  }
 
-
-  int get password{
-    return _password;
-  }
-  set password (data){
-    _password = data;
-    notifyListeners();
-  }
 }
