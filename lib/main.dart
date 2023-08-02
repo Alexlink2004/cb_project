@@ -1,23 +1,17 @@
-import 'dart:io';
-
 import 'package:cb_project/src/auth/admin/controllers/general_data_controller.dart';
 import 'package:cb_project/src/auth/admin/controllers/page_controller.dart';
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/login_screen/login_controller.dart';
-import 'package:cb_project/src/auth/login_screen/login_screen.dart';
+import 'package:cb_project/src/auth/login_screen/login_handler.dart';
 import 'package:cb_project/src/auth/tv_summary/views/tv_summary_view.dart';
 import 'package:cb_project/src/auth/voting_users/alderman/views/alderman_view.dart';
 import 'package:cb_project/src/auth/voting_users/president/views/president_view.dart';
 import 'package:cb_project/src/auth/voting_users/secretary/views/secretary_view.dart';
-
 import 'package:cb_project/src/server/sockets/sockets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() {
-
-
   //Run app
   runApp(
     const VotingSystemApp(),
@@ -29,7 +23,6 @@ class VotingSystemApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

@@ -9,7 +9,7 @@ import '../src/auth/voting_users/secretary/views/secretary_view.dart';
 
 class DebugPanel extends StatelessWidget {
   const DebugPanel({Key? key}) : super(key: key);
-  final bool on = true;
+  final bool on = false;
 
   @override
   Widget build(BuildContext context) {

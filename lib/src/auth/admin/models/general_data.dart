@@ -1,8 +1,9 @@
-import '../../../server/models/user.dart';
-
 class GeneralData {
-  List<User> users;
-  int ayuntamientoNumber;
+  List<dynamic> users;
+  int cityHallNumber;
 
-  GeneralData({required this.users, required this.ayuntamientoNumber});
+  GeneralData({
+    required this.users,
+    required this.cityHallNumber,
+  });
 }

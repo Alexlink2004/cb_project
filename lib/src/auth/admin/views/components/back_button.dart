@@ -1,5 +1,6 @@
-import 'package:cb_project/src/auth/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../../../login_screen/login_handler.dart';
 
 class LogOutButton extends StatefulWidget {
   @override
@@ -28,9 +29,8 @@ class _LogOutButtonState extends State<LogOutButton> {
                     onPressed: () {
                       // Acciones para cerrar sesión y cerrar pestañas
                       Navigator.pop(context);
-                      Navigator.of(context).pushReplacementNamed(LoginHandler.id);
-
-
+                      Navigator.of(context)
+                          .pushReplacementNamed(LoginHandler.id);
                     },
                     child: const Text("Sí"),
                   ),

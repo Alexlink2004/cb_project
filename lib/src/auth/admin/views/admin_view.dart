@@ -1,5 +1,5 @@
 import 'package:cb_project/src/auth/admin/views/components/back_button.dart';
-import 'package:cb_project/src/auth/admin/views/pages/general_data_view.dart';
+import 'package:cb_project/src/auth/admin/views/pages/general_data/general_data_view.dart';
 import 'package:cb_project/src/auth/admin/views/pages/reports_view.dart';
 import 'package:cb_project/src/auth/admin/views/pages/session_view.dart';
 import 'package:flutter/material.dart';

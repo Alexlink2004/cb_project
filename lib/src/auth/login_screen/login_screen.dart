@@ -2,40 +2,9 @@ import 'package:cb_project/src/auth/login_screen/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 import '../../../debug/debug_panel.dart';
 import '../../server/sockets/sockets.dart';
-
-class LoginHandler extends StatefulWidget {
-  static const id = '/login';
-  const LoginHandler({Key? key}) : super(key: key);
-
-  @override
-  State<LoginHandler> createState() => _LoginHandlerState();
-}
-
-class _LoginHandlerState extends State<LoginHandler> {
-
-
-
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    //Socket Client
-    Provider.of<SocketClient>(context).initSocket(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final socketClient = Provider.of<SocketClient>(context);
-    if (!socketClient.socket.connected) {
-      return const LoadingScreen();
-    } else {
-      return const LoginScreen();
-    }
-  }
-}
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -46,7 +15,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final  _loginController = Provider.of<LoginController>(context);
+    final _loginController = Provider.of<LoginController>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       body: SafeArea(
@@ -124,13 +93,13 @@ class LoginScreen extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Stack(
-                children:  [
+                children: [
                   const Positioned(
                     top: 0,
                     right: 0,
                     child: DebugPanel(),
                   ),
-                   SizedBox(
+                  SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                           Container(
                             width: 261,
                             height: 71,
-                            constraints:const  BoxConstraints(
+                            constraints: const BoxConstraints(
                               maxWidth: 261,
                               maxHeight: 71,
                             ),
@@ -164,7 +133,6 @@ class LoginScreen extends StatelessWidget {
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
-
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.grey.shade700,
@@ -177,8 +145,9 @@ class LoginScreen extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                              onSubmitted: (data){
-                                _handleLogin(context, _loginController.loginFieldController.text);
+                              onSubmitted: (data) {
+                                _handleLogin(context,
+                                    _loginController.loginFieldController.text);
                               },
                             ),
                           ),
