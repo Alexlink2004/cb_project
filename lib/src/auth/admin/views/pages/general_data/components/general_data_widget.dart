@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../../../../server/sockets/sockets.dart';
 import 'add_user_popup.dart';
@@ -14,7 +15,9 @@ class GeneralDataWidget extends StatefulWidget {
 }
 
 class GeneralDataWidgetState extends State<GeneralDataWidget> {
-  // Controladores para los campos del usuario en el popup de agregar/editar
+  late IO.Socket _socket;
+
+  //controllers
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _municipalityNumberController =
       TextEditingController();
@@ -26,7 +29,15 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _memberStatusController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  //
+
+  @override
+  void initState() {
+    super.initState();
+    _socket = IO.io(
+      SocketClient.socketHost,
+      IO.OptionBuilder().setTransports(['websocket']).build(),
+    );
+  }
 
   @override
   void dispose() {
@@ -41,12 +52,15 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     _endDateController.dispose();
     _memberStatusController.dispose();
     _passwordController.dispose();
+    _socket.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final SocketClient socketClient = Provider.of<SocketClient>(context);
+    socketClient.initSocket(context, _socket);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

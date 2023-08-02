@@ -166,6 +166,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class LoadingScreen extends StatelessWidget {
+  static const id = "/loadingScreen";
   const LoadingScreen({super.key});
 
   @override

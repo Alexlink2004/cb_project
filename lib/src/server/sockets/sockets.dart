@@ -1,11 +1,8 @@
-import 'package:cb_project/src/auth/admin/controllers/general_data_controller.dart';
-import 'package:cb_project/src/auth/admin/models/general_data.dart';
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/voting_users/alderman/views/alderman_view.dart';
 import 'package:cb_project/src/auth/voting_users/president/views/president_view.dart';
 import 'package:cb_project/src/auth/voting_users/secretary/views/secretary_view.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketClient extends ChangeNotifier {
@@ -14,25 +11,23 @@ class SocketClient extends ChangeNotifier {
       socketHost, IO.OptionBuilder().setTransports(['websocket']).build());
   IO.Socket get socket => _socket;
 
-  void initSocket(BuildContext context) {
-    _socket.onConnect((data) {
+  void initSocket(BuildContext context, IO.Socket socket) {
+    socket.onConnect((data) {
       debugPrint('connected + $data');
       notifyListeners();
     });
 
-    _socket.onConnectError((data) {
+    socket.onConnectError((data) {
       debugPrint('not connected + $data');
 
       notifyListeners();
     });
 
-    _socket.on('server:login', (data) {
+    socket.on('server:login', (data) {
       // Aquí recibes la información del usuario que ha iniciado sesión
 
       String userRole = data['position'];
-      //debugPrint(userRole);
 
-      // Añade los casos para cada rol y redirige a la pantalla correspondiente
       switch (userRole) {
         case 'Administrador':
           // Redirige a la pantalla del administrador
@@ -67,34 +62,16 @@ class SocketClient extends ChangeNotifier {
       }
     });
 
-    _socket.on('server:loginerror', (data) {
+    socket.on('server:loginerror', (data) {
       debugPrint("server:loginerror");
     });
 
-    _socket.on('server:requestgeneraldata', (data) {
-      final GeneralDataProvider generalDataProvider =
-          Provider.of<GeneralDataProvider>(context, listen: false);
-
-      debugPrint(
-        "Datos de server:requestgeneraldatageneral",
-      );
-
-      int municipalityNumber = data['municipalityNumber'];
-
-      generalDataProvider.generalData = GeneralData(
-        users: data['users'],
-        cityHallNumber: municipalityNumber.toInt(),
-      );
-
-      notifyListeners();
-    });
-
-    _socket.on('server:updateuser', (data) {
+    socket.on('server:updateuser', (data) {
       debugPrint("Datos de usuarios actualizada:");
       notifyListeners();
     });
 
-    _socket.on('server:adduser', (data) {
+    socket.on('server:adduser', (data) {
       // final GeneralDataProvider generalDataProvider =
       //     Provider.of<GeneralDataProvider>(context, listen: false);
       debugPrint("Nuevo usuario agregado");
@@ -103,13 +80,14 @@ class SocketClient extends ChangeNotifier {
       notifyListeners();
     });
 
-    _socket.connect();
+    socket.connect();
   }
 
   void disposeSocket() {
-    _socket.off('server:requestgeneraldata');
-    _socket.off('server:updateuser');
-    _socket.off('server:adduser');
+    socket.off('server:updateuser');
+    socket.off('server:adduser');
+    socket.off('server:loginerror');
+    socket.off('server:server:login');
     // Add other socket event listeners that need to be removed on dispose
   }
 }
