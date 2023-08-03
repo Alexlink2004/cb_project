@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
 import 'add_user_popup.dart';
 
 class GeneralDataWidget extends StatefulWidget {
-  final List<dynamic> users; // Lista de usuarios desde el backend
+  //final List<dynamic> users; // Lista de usuarios desde el backend
 
-  const GeneralDataWidget({required this.users, Key? key}) : super(key: key);
+  //const GeneralDataWidget({Key? key}) : super(key: key);
 
   @override
   GeneralDataWidgetState createState() => GeneralDataWidgetState();
@@ -33,10 +34,11 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   @override
   void initState() {
     super.initState();
-    _socket = IO.io(
-      SocketClient.socketHost,
-      IO.OptionBuilder().setTransports(['websocket']).build(),
-    );
+
+    final SocketClient socketClient =
+        Provider.of<SocketClient>(context, listen: false);
+
+    socketClient.socket.emit('client:getusers');
   }
 
   @override
@@ -60,7 +62,9 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   @override
   Widget build(BuildContext context) {
     final SocketClient socketClient = Provider.of<SocketClient>(context);
-    socketClient.initSocket(context, _socket);
+
+    List<User> users = socketClient.users;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -76,9 +80,9 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                 mainAxisSpacing: 16.0,
               ),
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.users.length,
+              itemCount: users.length,
               itemBuilder: (context, index) {
-                Map<String, dynamic> user = widget.users[index];
+                User user = users[index];
                 return UserCard(
                   index: index,
                   user: user,
@@ -87,8 +91,18 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                     _showEditUserPopup(context, user, index);
                   },
                   onDelete: (index) {
-                    setState(() {
-                      // widget.users(index);
+                    _socket.emit("client:deleteuser", {
+                      'position': user.position,
+                      'password': user.password,
+                      'endDate': user.endDate,
+                      'lastName': user.lastName,
+                      'firstName': user.firstName,
+                      'gender': user.gender,
+                      'memberPhoto': user.memberPhoto,
+                      'memberStatus': user.memberStatus,
+                      'municipalityNumber': user.municipalityNumber,
+                      'party': user.party,
+                      'startDate': user.startDate,
                     });
                   },
                 );
@@ -100,21 +114,18 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     );
   }
 
-  // Método para mostrar el popup para editar un usuario existente
-  void _showEditUserPopup(
-      BuildContext context, Map<String, dynamic> user, int index) {
-    // Setear los valores iniciales de los controladores con los datos actuales del usuario
-    _positionController.text = user['position'];
-    _municipalityNumberController.text = user['municipaltyNumber'];
-    _lastNameController.text = user['last_name'];
+  void _showEditUserPopup(BuildContext context, User user, int index) {
+    _positionController.text = user.position!;
+    _municipalityNumberController.text = user.municipalityNumber.toString();
+    _lastNameController.text = user.lastName!;
 
-    _firstNameController.text = user['first_name'];
-    _genderController.text = user['gender'];
-    _partyController.text = user['party'];
-    _startDateController.text = user['start_date'];
-    _endDateController.text = user['end_date'];
-    _memberStatusController.text = user['member_status']!;
-    _passwordController.text = user['password']!;
+    _firstNameController.text = user.firstName!;
+    _genderController.text = user.gender!;
+    _partyController.text = user.party!;
+    _startDateController.text = user.startDate as String;
+    _endDateController.text = user.endDate as String;
+    _memberStatusController.text = user.memberStatus!;
+    _passwordController.text = user.password!;
 
     showDialog(
       context: context,
@@ -219,8 +230,8 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
 }
 
 class UserCard extends StatelessWidget {
-  final Map<String, dynamic> user;
-  final Function(Map<String, dynamic>, int) onEdit;
+  final User user;
+  final Function(User, int) onEdit;
   final Function(int) onDelete;
   final int index;
 
@@ -259,8 +270,8 @@ class UserCard extends StatelessWidget {
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      'Nombre: ${user['first_name']} ${user['last_name']}',
-                      style: TextStyle(
+                      'Nombre: ${user.firstName} ${user.lastName}',
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -271,8 +282,8 @@ class UserCard extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Cargo: ${user['position']}',
-                        style: TextStyle(color: Colors.black),
+                        'Cargo: ${user.position}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -280,8 +291,8 @@ class UserCard extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Género: ${user['gender']}',
-                        style: TextStyle(color: Colors.black),
+                        'Género: ${user.gender}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -289,8 +300,8 @@ class UserCard extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Número de Municipio: ${user['municipalityNumber']}',
-                        style: TextStyle(color: Colors.black),
+                        'Número de Municipio: ${user.municipalityNumber}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -298,26 +309,26 @@ class UserCard extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Partido: ${user['party']}',
-                        style: TextStyle(color: Colors.black),
+                        'Partido: ${user.party}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
+                  // Flexible(
+                  //   child: FittedBox(
+                  //     fit: BoxFit.scaleDown,
+                  //     child: Text(
+                  //       'Estado de Membresía: ${user.memberStatus}',
+                  //       style: const TextStyle(color: Colors.black),
+                  //     ),
+                  //   ),
+                  // ),
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        'Estado de Membresía: ${user['member_status']}',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Contraseña: ${user['password']}',
-                        style: TextStyle(color: Colors.black),
+                        'Contraseña: ${user.password}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -327,7 +338,7 @@ class UserCard extends StatelessWidget {
           ),
           Container(
             height: 40,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFFF3F3F3),
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(10.0)),
@@ -338,15 +349,15 @@ class UserCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => onEdit(user, index),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
                       'Editar',
                       style: TextStyle(fontSize: 16),
@@ -356,15 +367,15 @@ class UserCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => onDelete(index),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
                       'Eliminar',
                       style: TextStyle(fontSize: 16),

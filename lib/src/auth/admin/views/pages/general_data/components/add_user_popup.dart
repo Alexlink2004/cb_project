@@ -1,28 +1,30 @@
-import 'package:cb_project/src/server/sockets/sockets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../server/sockets/sockets.dart';
+
+final List<String> positions = [
+  'Administrador',
+  'Secretario',
+  'Presidente',
+  'Regidor',
+];
+
+final List<String> memberStatus = ['Activo', 'Inactivo'];
+
+final List<String> genders = ['Masculino', 'Femenino'];
+
 class AddUserButton extends StatefulWidget {
-  const AddUserButton({
-    super.key,
-  });
+  const AddUserButton({super.key});
 
   @override
-  AddUserButtonState createState() => AddUserButtonState();
+  _AddUserButtonState createState() => _AddUserButtonState();
 }
 
-class AddUserButtonState extends State<AddUserButton> {
-  // final TextStyle _textStyle =
-  //     const TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
-
-  final BorderRadiusGeometry _borderRadius = BorderRadius.circular(10.0);
-  final OutlineInputBorder _outlineInputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: Colors.grey),
-  );
+class _AddUserButtonState extends State<AddUserButton> {
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _municipalityNumberController =
-      TextEditingController();
+      TextEditingController(text: '10'); // Set default value to 10
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
@@ -33,12 +35,30 @@ class AddUserButtonState extends State<AddUserButton> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    // Set default values for controllers
+    _positionController.text = positions[0];
+    _genderController.text = genders[0];
+    _memberStatusController.text = memberStatus[0];
+    _startDateController.text =
+        '${DateTime.now().year - 2}-${DateTime.now().month}-${DateTime.now().day}';
+    _endDateController.text =
+        '${DateTime.now().year + 2}-${DateTime.now().month}-${DateTime.now().day}';
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final SocketClient socket = Provider.of<SocketClient>(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        onPrimary: Colors.black,
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
           side: const BorderSide(color: Colors.black),
@@ -52,48 +72,116 @@ class AddUserButtonState extends State<AddUserButton> {
               title: const Text('Agregar Usuario'),
               content: SizedBox(
                 width: 500,
-                child: Column(
-                  children: [
-                    _buildTextField('Apellido', _lastNameController),
-                    _buildTextField('Nombre', _firstNameController),
-                    GridView.count(
-                      crossAxisCount: 3,
-                      childAspectRatio: 3.0,
-                      mainAxisSpacing: 12.0,
-                      crossAxisSpacing: 8.0,
-                      shrinkWrap: true,
-                      children: [
-                        _buildTextField('Cargo', _positionController),
-                        _buildTextField('Número de Municipio',
-                            _municipalityNumberController),
-                        _buildTextField('Género', _genderController),
-                        _buildTextField('Partido', _partyController),
-                        _buildTextField(
-                            'Fecha de Inicio', _startDateController),
-                        _buildTextField('Fecha de Fin', _endDateController),
-                        _buildTextField(
-                            'Estado de Membresía', _memberStatusController),
-                        _buildTextField('Contraseña', _passwordController),
-                      ],
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              'Nombre',
+                              _firstNameController,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: _buildTextField(
+                              'Apellido',
+                              _lastNameController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDropdownField(
+                              'Puesto',
+                              _positionController,
+                              positions,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: _buildTextField(
+                              'Número de Municipio',
+                              _municipalityNumberController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDropdownField(
+                              'Género',
+                              _genderController,
+                              genders,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildTextField(
+                              'Partido',
+                              _partyController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDateField(
+                              'Fecha de Inicio',
+                              _startDateController,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildDateField(
+                              'Fecha de Fin',
+                              _endDateController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      _buildDropdownField(
+                        'Estado de Membresía',
+                        _memberStatusController,
+                        memberStatus,
+                      ),
+                      SizedBox(height: 8),
+                      _buildTextField(
+                        'Contraseña',
+                        _passwordController,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               actions: [
                 TextButton(
                   onPressed: () {
-                    socket.socket.emit('client:adduser', {
+                    final SocketClient _socketClient =
+                        Provider.of<SocketClient>(context, listen: false);
+                    _socketClient.socket.emit('client:adduser', {
                       'position': _positionController.value.text,
                       'municipalityNumber':
                           _municipalityNumberController.value.text,
-                      'last_name': _lastNameController.value.text,
-                      'first_name': _firstNameController.value.text,
+                      'lastName': _lastNameController.value.text,
+                      'firstName': _firstNameController.value.text,
                       'gender': _genderController.value.text,
                       'party': _partyController.value.text,
-                      'start_date': _startDateController.value.text,
-                      'end_date': _endDateController.value.text,
-                      'member_status': _memberStatusController.value.text,
+                      'startDate': _startDateController.value.text,
+                      'endDate': _endDateController.value.text,
+                      'memberStatus': _memberStatusController.value.text,
                       'password': _passwordController.value.text,
+                      'memberPhoto': '',
                     });
                     Navigator.pop(context);
                   },
@@ -121,7 +209,68 @@ class AddUserButtonState extends State<AddUserButton> {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        border: _outlineInputBorder,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownField(
+    String labelText,
+    TextEditingController controller,
+    List<String> items,
+  ) {
+    return DropdownButtonFormField<String>(
+      value: controller.text.isNotEmpty ? controller.text : null,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+      ),
+      items: items.map((item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          controller.text = value!;
+        });
+      },
+    );
+  }
+
+  Widget _buildDateField(String labelText, TextEditingController controller) {
+    return TextFormField(
+      readOnly: true,
+      controller: controller,
+      onTap: () async {
+        DateTime? date = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+        );
+
+        if (date != null) {
+          String formattedDate =
+              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+          setState(() {
+            controller.text = formattedDate;
+          });
+        }
+      },
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
       ),
     );
   }

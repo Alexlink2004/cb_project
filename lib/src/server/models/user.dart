@@ -1,14 +1,14 @@
 class User {
-  String? position;
+  String position;
   int? municipalityNumber;
   String? lastName;
   String? firstName;
   String? gender;
   String? party;
-  DateTime? startDate;
-  DateTime? endDate;
+  String? startDate;
+  String? endDate;
   String? memberStatus;
-  Map<String, dynamic>? memberPhoto;
+  String? memberPhoto;
   String? password;
 
   User({
@@ -27,16 +27,16 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> user) {
     return User(
+      position: user['position'],
       password: user['password'],
       endDate: user['endDate'],
+      lastName: user['lastName'],
       firstName: user['firstName'],
       gender: user['gender'],
-      lastName: user['lastName'],
       memberPhoto: user['memberPhoto'],
       memberStatus: user['memberStatus'],
       municipalityNumber: user['municipalityNumber'],
       party: user['party'],
-      position: user['position'],
       startDate: user['startDate'],
     );
   }

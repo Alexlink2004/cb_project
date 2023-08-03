@@ -1,4 +1,5 @@
 import 'package:cb_project/src/auth/admin/views/components/admin_page_template.dart';
+import 'package:cb_project/src/auth/admin/views/pages/general_data/components/general_data_widget.dart';
 import 'package:flutter/material.dart';
 
 class GeneralDataView extends StatelessWidget {
@@ -15,9 +16,7 @@ class GeneralDataView extends StatelessWidget {
           "Actualiza la información clave del Ayuntamiento, como los nombres de los gobernantes y otros detalles relevantes.",
       content: SizedBox(
         height: 10000000,
-        // child: GeneralDataWidget(
-        //   //users: generalData.users,
-        // ),
+        child: GeneralDataWidget(),
       ),
     );
   }
