@@ -41,7 +41,7 @@ class _AddUserButtonState extends State<AddUserButton> {
     // Set default values for controllers
     _positionController.text = positions[0];
     _genderController.text = genders[0];
-    _memberStatusController.text = memberStatus[0];
+    _memberStatusController.text = 'Activo';
     _startDateController.text =
         '${DateTime.now().year - 2}-${DateTime.now().month}-${DateTime.now().day}';
     _endDateController.text =

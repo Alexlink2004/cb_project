@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
@@ -16,7 +15,7 @@ class GeneralDataWidget extends StatefulWidget {
 }
 
 class GeneralDataWidgetState extends State<GeneralDataWidget> {
-  late IO.Socket _socket;
+  // late IO.Socket _socket;
 
   //controllers
   final TextEditingController _positionController = TextEditingController();
@@ -31,15 +30,15 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   final TextEditingController _memberStatusController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-
-    final SocketClient socketClient =
-        Provider.of<SocketClient>(context, listen: false);
-
-    socketClient.socket.emit('client:getusers');
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // final SocketClient socketClient =
+  //   //     Provider.of<SocketClient>(context, listen: false);
+  //   //
+  //   // socketClient.socket.emit('client:getusers');
+  // }
 
   @override
   void dispose() {
@@ -54,7 +53,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     _endDateController.dispose();
     _memberStatusController.dispose();
     _passwordController.dispose();
-    _socket.dispose();
+    //  _socket.dispose();
 
     super.dispose();
   }
@@ -91,19 +90,11 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                     _showEditUserPopup(context, user, index);
                   },
                   onDelete: (index) {
-                    _socket.emit("client:deleteuser", {
-                      'position': user.position,
-                      'password': user.password,
-                      'endDate': user.endDate,
-                      'lastName': user.lastName,
-                      'firstName': user.firstName,
-                      'gender': user.gender,
-                      'memberPhoto': user.memberPhoto,
-                      'memberStatus': user.memberStatus,
-                      'municipalityNumber': user.municipalityNumber,
-                      'party': user.party,
-                      'startDate': user.startDate,
-                    });
+                    socketClient.socket.emit(
+                      "client:deleteuser",
+                      user.password,
+                    );
+                    debugPrint("client:deleteuser ${user.password}");
                   },
                 );
               },
@@ -208,7 +199,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                 };
 
                 // Enviar los datos del usuario actualizado al servidor
-                socketClient.socket.emit('client:updateuser', updatedUserData);
+                // socketClient.socket.emit('client:updateuser', updatedUserData);
 
                 // Cerrar el popup
                 Navigator.pop(context);
@@ -261,10 +252,10 @@ class UserCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    backgroundColor: Color(0xFFBDBDBD),
-                    radius: 32,
-                    child: FlutterLogo(),
+                  const Icon(
+                    Icons.account_circle_sharp,
+                    color: Colors.black,
+                    size: 40,
                   ),
                   const SizedBox(height: 8),
                   FittedBox(
@@ -314,15 +305,6 @@ class UserCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Flexible(
-                  //   child: FittedBox(
-                  //     fit: BoxFit.scaleDown,
-                  //     child: Text(
-                  //       'Estado de Membresía: ${user.memberStatus}',
-                  //       style: const TextStyle(color: Colors.black),
-                  //     ),
-                  //   ),
-                  // ),
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,

@@ -8,30 +8,16 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../models/user.dart';
 
 class SocketClient extends ChangeNotifier {
-  static const String socketHost = 'http://192.168.1.102:3000';
+  static const String socketHost = 'http://localhost:3000';
   final IO.Socket _socket = IO.io(
       socketHost, IO.OptionBuilder().setTransports(['websocket']).build());
   IO.Socket get socket => _socket;
   int timesInstance = 0;
 
-  final List<User> _users = [
-    // User(
-    //   password: "0046",
-    //   endDate: "2023-12-31",
-    //   firstName: "John",
-    //   gender: "Male",
-    //   lastName: "Doe",
-    //   memberPhoto: "url" "https://example.com/user123.jpg",
-    //   memberStatus: "Active",
-    //   municipalityNumber: 123,
-    //   party: "Example Party",
-    //   position: "Administrador",
-    //   startDate: "2021-01-01",
-    // ),
-  ];
+  List<User> _users = [];
 
   set users(data) {
-    users = data;
+    _users = data;
     notifyListeners();
   }
 
@@ -98,6 +84,7 @@ class SocketClient extends ChangeNotifier {
 
       _socket.on('server:updateuser', (data) {
         debugPrint("Datos de usuarios actualizada:");
+
         notifyListeners();
       });
 
@@ -105,6 +92,7 @@ class SocketClient extends ChangeNotifier {
         // final GeneralDataProvider generalDataProvider =
         //     Provider.of<GeneralDataProvider>(context, listen: false);
         debugPrint("Nuevo usuario agregado");
+        users.add(User.fromJson(data));
         // _socket.emit('client:adduser', {});
 
         // debugPrint(data.toString());
@@ -124,6 +112,7 @@ class SocketClient extends ChangeNotifier {
 
         debugPrint('Numero de usuarios: ${userListConverted.length}');
 
+        //notifyUsersUpdate(userListConverted);
         notifyListeners();
       });
     }
