@@ -82,6 +82,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
               itemCount: users.length,
               itemBuilder: (context, index) {
                 User user = users[index];
+
                 return UserCard(
                   index: index,
                   user: user,

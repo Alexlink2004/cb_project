@@ -92,10 +92,11 @@ class SocketClient extends ChangeNotifier {
         // final GeneralDataProvider generalDataProvider =
         //     Provider.of<GeneralDataProvider>(context, listen: false);
         debugPrint("Nuevo usuario agregado");
-        users.add(User.fromJson(data));
-        // _socket.emit('client:adduser', {});
 
-        // debugPrint(data.toString());
+        users.add(User.fromJson(data));
+
+        debugPrint("$data");
+        _socket.emit('client:getusers', {});
 
         notifyListeners();
       });

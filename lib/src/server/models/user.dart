@@ -1,6 +1,6 @@
 class User {
   String position;
-  int? municipalityNumber;
+  String? municipalityNumber;
   String? lastName;
   String? firstName;
   String? gender;

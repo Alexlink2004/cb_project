@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
 
 final List<String> positions = [
-  'Administrador',
   'Secretario',
   'Presidente',
   'Regidor',
+  'Administrador',
 ];
 
 final List<String> memberStatus = ['Activo', 'Inactivo'];
@@ -24,7 +25,7 @@ class AddUserButton extends StatefulWidget {
 class _AddUserButtonState extends State<AddUserButton> {
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _municipalityNumberController =
-      TextEditingController(text: '10'); // Set default value to 10
+      TextEditingController(text: '24');
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
@@ -42,6 +43,7 @@ class _AddUserButtonState extends State<AddUserButton> {
     _positionController.text = positions[0];
     _genderController.text = genders[0];
     _memberStatusController.text = 'Activo';
+    _partyController.text = 'sin-definir';
     _startDateController.text =
         '${DateTime.now().year - 2}-${DateTime.now().month}-${DateTime.now().day}';
     _endDateController.text =
@@ -167,9 +169,9 @@ class _AddUserButtonState extends State<AddUserButton> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    final SocketClient _socketClient =
+                    final SocketClient socketClient =
                         Provider.of<SocketClient>(context, listen: false);
-                    _socketClient.socket.emit('client:adduser', {
+                    final Map<String, dynamic> userAdded = {
                       'position': _positionController.value.text,
                       'municipalityNumber':
                           _municipalityNumberController.value.text,
@@ -182,7 +184,9 @@ class _AddUserButtonState extends State<AddUserButton> {
                       'memberStatus': _memberStatusController.value.text,
                       'password': _passwordController.value.text,
                       'memberPhoto': '',
-                    });
+                    };
+                    socketClient.socket.emit('client:adduser', userAdded);
+                    socketClient.users.add(User.fromJson(userAdded));
                     Navigator.pop(context);
                   },
                   child: const Text('Guardar'),
