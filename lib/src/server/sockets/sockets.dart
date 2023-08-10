@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/voting_users/alderman/views/alderman_view.dart';
 import 'package:cb_project/src/auth/voting_users/president/views/president_view.dart';
@@ -13,6 +15,11 @@ class SocketClient extends ChangeNotifier {
       socketHost, IO.OptionBuilder().setTransports(['websocket']).build());
   IO.Socket get socket => _socket;
   int timesInstance = 0;
+
+  final StreamController<List<User>> _userStreamController =
+      StreamController<List<User>>();
+
+  Stream<List<User>> get userStream => _userStreamController.stream;
 
   List<User> _users = [];
 
@@ -89,19 +96,21 @@ class SocketClient extends ChangeNotifier {
       });
 
       _socket.on('server:adduser', (data) {
-        // final GeneralDataProvider generalDataProvider =
-        //     Provider.of<GeneralDataProvider>(context, listen: false);
-        debugPrint("Nuevo usuario agregado");
+        _socket.on('server:adduser', (data) {
+          debugPrint("Nuevo usuario agregado");
 
-        users.add(User.fromJson(data));
+          users.add(User.fromJson(data));
 
-        debugPrint("$data");
-        _socket.emit('client:getusers', {});
+          debugPrint("$data");
+          _socket.emit('client:getusers', {});
 
-        notifyListeners();
+          _userStreamController.add(users); // Notify the stream listeners
+          notifyListeners();
+        });
       });
 
       _socket.on('server:getusers', (data) {
+        debugPrint("server:getusers");
         List<dynamic> userList = data;
 
         List<User> userListConverted =
@@ -113,9 +122,25 @@ class SocketClient extends ChangeNotifier {
 
         debugPrint('Numero de usuarios: ${userListConverted.length}');
 
-        //notifyUsersUpdate(userListConverted);
-        notifyListeners();
+        // Notify the stream listeners with the updated user list
+        _userStreamController.add(users);
       });
+      //
+      // _socket.on(
+      //     "server:deleteerror",
+      //     (data) => {
+      //           ScaffoldMessenger.of(context).showSnackBar(
+      //             const SnackBar(
+      //               content: Text(
+      //                 'Delete Error',
+      //                 style: TextStyle(color: Colors.white),
+      //               ),
+      //               backgroundColor: Colors.red,
+      //               duration: Duration(seconds: 2),
+      //             ),
+      //           ),
+      //         });
+      // notifyListeners();
     }
 
     _socket.connect();

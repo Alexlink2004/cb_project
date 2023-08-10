@@ -62,7 +62,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   Widget build(BuildContext context) {
     final SocketClient socketClient = Provider.of<SocketClient>(context);
 
-    List<User> users = socketClient.users;
+    //List<User> users = socketClient.users;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -71,35 +71,51 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
         children: [
           const AddUserButton(),
           const SizedBox(height: 16),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Dos tarjetas por fila
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                User user = users[index];
+          StreamBuilder<List<User>>(
+            stream: socketClient.userStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<User> users = snapshot.data!;
 
-                return UserCard(
-                  index: index,
-                  user: user,
-                  onEdit: (user, index) {
-                    // Show the popup to edit the user
-                    _showEditUserPopup(context, user, index);
-                  },
-                  onDelete: (index) {
-                    socketClient.socket.emit(
-                      "client:deleteuser",
-                      user.password,
-                    );
-                    debugPrint("client:deleteuser ${user.password}");
-                  },
+                return Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Dos tarjetas por fila
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                    ),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      User user = users[index];
+
+                      return UserCard(
+                        index: index,
+                        user: user,
+                        onEdit: (user, index) {
+                          // Show the popup to edit the user
+                          _showEditUserPopup(context, user, index);
+                        },
+                        onDelete: (index) {
+                          socketClient.socket.emit(
+                            "client:deleteuser",
+                            user.password,
+                          );
+                          debugPrint("client:deleteuser ${user.password}");
+                        },
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
+              } else if (snapshot.hasError) {
+                // Handle error case
+                return Text("Error: ${snapshot.error}");
+              } else {
+                // Loading state
+                return const CircularProgressIndicator();
+              }
+            },
           ),
         ],
       ),
