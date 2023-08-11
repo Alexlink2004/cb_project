@@ -60,7 +60,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final SocketClient socketClient = Provider.of<SocketClient>(context);
+    final SocketClient socketClient = SocketClient();
 
     //List<User> users = socketClient.users;
 
@@ -98,7 +98,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                           _showEditUserPopup(context, user, index);
                         },
                         onDelete: (index) {
-                          socketClient.socket.emit(
+                          socketClient.emit(
                             "client:deleteuser",
                             user.password,
                           );

@@ -9,13 +9,14 @@ import '../../server/sockets/sockets.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
   void _handleLogin(BuildContext context, String password) {
-    final socketClient = Provider.of<SocketClient>(context, listen: false);
-    socketClient.socket.emit("client:login", password);
+    final SocketClient socketClient = SocketClient();
+    socketClient.setContext(context);
+    socketClient.emit("client:login", password);
   }
 
   @override
   Widget build(BuildContext context) {
-    final _loginController = Provider.of<LoginController>(context);
+    final loginController = Provider.of<LoginController>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       body: SafeArea(
@@ -129,7 +130,7 @@ class LoginScreen extends StatelessWidget {
                               maxHeight: 71,
                             ),
                             child: TextField(
-                              controller: _loginController.loginFieldController,
+                              controller: loginController.loginFieldController,
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -147,7 +148,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               onSubmitted: (data) {
                                 _handleLogin(context,
-                                    _loginController.loginFieldController.text);
+                                    loginController.loginFieldController.text);
                               },
                             ),
                           ),

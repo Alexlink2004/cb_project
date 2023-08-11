@@ -53,6 +53,8 @@ class _AddUserButtonState extends State<AddUserButton> {
   @override
   void dispose() {
     super.dispose();
+    final SocketClient socketClient = SocketClient();
+    socketClient.dispose();
   }
 
   @override
@@ -185,7 +187,7 @@ class _AddUserButtonState extends State<AddUserButton> {
                       'password': _passwordController.value.text,
                       'memberPhoto': '',
                     };
-                    socketClient.socket.emit('client:adduser', userAdded);
+                    socketClient.emit('client:adduser', userAdded);
                     socketClient.users.add(User.fromJson(userAdded));
                     Navigator.pop(context);
                   },

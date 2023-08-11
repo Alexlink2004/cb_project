@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../server/sockets/sockets.dart';
 import 'login_screen.dart';
@@ -21,16 +20,19 @@ class _LoginHandlerState extends State<LoginHandler> {
   @override
   void dispose() {
     super.dispose();
+    final SocketClient socketClient = SocketClient();
+    socketClient.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final SocketClient socketClient = Provider.of<SocketClient>(context);
-    socketClient.initSocket(context);
-    if (!socketClient.socket.connected) {
-      return const LoadingScreen();
-    } else {
+    final SocketClient socketClient = SocketClient();
+    socketClient.setContext(context);
+
+    if (!socketClient.isLoggedIn) {
       return const LoginScreen();
+    } else {
+      return const LoadingScreen();
     }
   }
 }
