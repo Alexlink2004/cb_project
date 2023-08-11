@@ -101,7 +101,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                         onDelete: (index) {
                           socketClient.emit(
                             "client:deleteuser",
-                            user.password,
+                            {user.password},
                           );
                           debugPrint("client:deleteuser ${user.password}");
                         },

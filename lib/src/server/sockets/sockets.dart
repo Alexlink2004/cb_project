@@ -143,36 +143,48 @@ class SocketClient extends ChangeNotifier {
     users.add(User.fromJson(data));
 
     debugPrint("$data");
-    _socket.emit('client:adduser', data);
 
-    _userStreamController.add(users); // Notify the stream listeners
+    if (!_userStreamController.isClosed) {
+      _socket.emit('client:adduser', data);
+      _userStreamController.add(users);
+    }
     notifyListeners();
   }
 
   void _onDeleteUser(data) {
-    String password = data; // Asume que los datos recibidos son la contraseña
+    String password = data[
+        'password']; // Asume que la contraseña se envía en un campo llamado 'password'
 
-    _socket.emit("server:deleteuser", data);
+    if (!_userStreamController.isClosed) {
+      users.remove(User.fromJson(data));
+      _socket.emit('client:deleteuser', password);
 
-    // Actualiza el stream con la nueva lista de usuarios
-    _userStreamController.add(users);
+      _userStreamController.add(users);
+    }
   }
 
   void _onGetUsers(data) {
     debugPrint("server:getusers");
     List<dynamic> userList = data;
     _users = userList.map((userData) => User.fromJson(userData)).toList();
-    _userStreamController.add(_users); // Notify the stream listeners
+    if (!_userStreamController.isClosed) {
+      _userStreamController.add(_users);
+    }
+
     notifyListeners();
+  }
+
+  void reconnect() {
+    _socket.connect(); // Conéctate nuevamente
   }
 
   void disposeSocket() {
     _userStreamController.close();
-    _socket.off('server:updateuser');
-    _socket.off('server:adduser');
-    _socket.off('server:loginerror');
-    _socket.off('server:server:login');
-    _socket.disconnect();
+    // _socket.off('server:updateuser');
+    // _socket.off('server:adduser');
+    // _socket.off('server:loginerror');
+    // _socket.off('server:server:login');
+    //_socket.disconnect();
   }
 
   set users(data) {
