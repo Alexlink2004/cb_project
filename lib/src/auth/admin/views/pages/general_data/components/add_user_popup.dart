@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
 
 final List<String> positions = [
@@ -198,7 +197,7 @@ class _AddUserButtonState extends State<AddUserButton> {
                       'memberPhoto': '',
                     };
                     socketClient.emit('client:adduser', userAdded);
-                    socketClient.users.add(User.fromJson(userAdded));
+                    //socketClient.add(User.fromJson(userAdded));
                     Navigator.pop(context);
                   },
                   child: const Text('Guardar'),

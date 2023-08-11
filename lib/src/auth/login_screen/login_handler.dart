@@ -29,7 +29,7 @@ class _LoginHandlerState extends State<LoginHandler> {
     final SocketClient socketClient = SocketClient();
     socketClient.setContext(context);
 
-    if (!socketClient.isLoggedIn) {
+    if (true) {
       return const LoginScreen();
     } else {
       return const LoadingScreen();

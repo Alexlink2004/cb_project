@@ -34,7 +34,6 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     super.initState();
     final SocketClient socketClient = SocketClient();
     socketClient.setContext(context);
-    socketClient.reconnect();
   }
 
   @override
@@ -75,7 +74,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
             stream: socketClient.userStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<User>? users = snapshot.data;
+                List<User> users = snapshot.data!;
 
                 return Expanded(
                   child: GridView.builder(
@@ -88,7 +87,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      User user = users![index];
+                      User user = users[index];
 
                       return UserCard(
                         index: index,
