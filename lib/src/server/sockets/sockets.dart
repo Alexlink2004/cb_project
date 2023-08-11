@@ -22,14 +22,16 @@ class SocketClient extends ChangeNotifier {
   final IO.Socket _socket = IO.io('http://localhost:3000',
       IO.OptionBuilder().setTransports(['websocket']).build());
   //STREAMS
-  final StreamController<List<User>> _userStreamController =
-      StreamController<List<User>>();
+  final _userStreamController = StreamController<List<User>>.broadcast();
   Stream<List<User>> get userStream => _userStreamController.stream;
   List<User> _users = [];
 
   factory SocketClient() => _instance;
 
   SocketClient._internal() {
+    _userStreamController.stream.listen((data) {
+      print('Data received: $data');
+    });
     _socket.onConnect(_onConnect);
     _socket.onConnectError(_onConnectError);
     _socket.on('server:login', (data) => _onLogin(data));
@@ -39,7 +41,32 @@ class SocketClient extends ChangeNotifier {
     _socket.on('server:getusers', _onGetUsers);
     _socket.on('server:deleteuser', _onDeleteUser);
     _socket.connect();
+    _updateStreamContinuously();
   }
+
+  Future<void> _updateStreamContinuously() async {
+    while (true) {
+      // Bucle infinito
+      await Future.delayed(Duration(seconds: 1)); // Espera un segundo
+
+      // Aquí puedes actualizar tus datos y agregarlos al Stream
+      _updateUsers();
+
+      if (!_userStreamController.isClosed) {
+        _userStreamController.add(_users);
+      }
+    }
+  }
+
+  void _updateUsers() {
+    // Aquí puedes actualizar la lista _users como necesites
+    // Por ejemplo, puedes emitir un evento al servidor para obtener los datos actualizados
+    _socket.emit('client:getusers', {});
+    if (!_userStreamController.isClosed) {
+      _userStreamController.add(_users);
+    }
+  }
+
   void setContext(BuildContext context) {
     _context = context;
   }
@@ -140,7 +167,7 @@ class SocketClient extends ChangeNotifier {
     debugPrint("server:adduser");
     // Manejo de agregar usuario
 
-    users.add(User.fromJson(data));
+    //  users.add(User.fromJson(data));
 
     debugPrint("$data");
 
@@ -179,7 +206,7 @@ class SocketClient extends ChangeNotifier {
   }
 
   void disposeSocket() {
-    _userStreamController.close();
+    //_userStreamController.close();
     // _socket.off('server:updateuser');
     // _socket.off('server:adduser');
     // _socket.off('server:loginerror');

@@ -29,15 +29,13 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   final TextEditingController _memberStatusController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   // final SocketClient socketClient =
-  //   //     Provider.of<SocketClient>(context, listen: false);
-  //   //
-  //   // socketClient.socket.emit('client:getusers');
-  // }
+  @override
+  void initState() {
+    super.initState();
+    final SocketClient socketClient = SocketClient();
+    socketClient.setContext(context);
+    socketClient.reconnect();
+  }
 
   @override
   void dispose() {
@@ -62,6 +60,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   @override
   Widget build(BuildContext context) {
     final SocketClient socketClient = SocketClient();
+    socketClient.setContext(context);
 
     //List<User> users = socketClient.users;
 
@@ -76,7 +75,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
             stream: socketClient.userStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<User> users = snapshot.data!;
+                List<User>? users = snapshot.data;
 
                 return Expanded(
                   child: GridView.builder(
@@ -87,9 +86,9 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                       mainAxisSpacing: 16.0,
                     ),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: users.length,
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      User user = users[index];
+                      User user = users![index];
 
                       return UserCard(
                         index: index,
