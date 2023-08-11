@@ -16,9 +16,13 @@ class SocketClient extends ChangeNotifier {
   final _userStreamController = StreamController<List<User>>.broadcast();
   Stream<List<User>> get userStream => _userStreamController.stream;
   List<User> _users = [];
-  void _startGettingUsers() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+  Future<void> _startGettingUsers() async {
+    Timer.periodic(
+        Duration(
+          seconds: await _userStreamController.stream.isEmpty ? 5 : 2,
+        ), (timer) {
       _socket.emit('client:getusers', {});
+      debugPrint("Updated users");
     });
   }
 
@@ -64,6 +68,7 @@ class SocketClient extends ChangeNotifier {
     String password = data['password'];
     _users.removeWhere((user) => user.password == password);
     _userStreamController.add(_users);
+    debugPrint("Deleted user: ${data['firstName']} ${data['lastName']}");
   }
 
   void _onLogin(data) {
