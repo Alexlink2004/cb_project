@@ -16,13 +16,15 @@ class SocketClient extends ChangeNotifier {
   final _userStreamController = StreamController<List<User>>.broadcast();
   Stream<List<User>> get userStream => _userStreamController.stream;
   List<User> _users = [];
+  int timerTimes = 0;
   Future<void> _startGettingUsers() async {
     Timer.periodic(
         Duration(
-          seconds: await _userStreamController.stream.isEmpty ? 5 : 2,
+          seconds: await _userStreamController.stream.isEmpty ? 2 : 5,
         ), (timer) {
       _socket.emit('client:getusers', {});
-      debugPrint("Updated users");
+      timerTimes++;
+      debugPrint("Updated users $timerTimes");
     });
   }
 

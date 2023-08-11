@@ -85,9 +85,13 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                       mainAxisSpacing: 16.0,
                     ),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.length,
+                    itemCount: snapshot.data!.length - 1,
                     itemBuilder: (context, index) {
-                      User user = users[index];
+                      List<User> filteredList = users
+                          .where(
+                              (User user) => user.position != "Administrador")
+                          .toList();
+                      User user = filteredList[index];
 
                       return UserCard(
                         index: index,
