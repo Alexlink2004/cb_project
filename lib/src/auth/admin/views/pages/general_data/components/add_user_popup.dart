@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
@@ -52,9 +51,20 @@ class _AddUserButtonState extends State<AddUserButton> {
 
   @override
   void dispose() {
-    super.dispose();
     final SocketClient socketClient = SocketClient();
-    socketClient.dispose();
+    socketClient.setContext(context);
+    _positionController.dispose();
+    _municipalityNumberController.dispose();
+    _lastNameController.dispose();
+    _firstNameController.dispose();
+    _genderController.dispose();
+    _partyController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
+    _memberStatusController.dispose();
+    _passwordController.dispose();
+    socketClient.disposeSocket();
+    super.dispose();
   }
 
   @override
@@ -171,8 +181,8 @@ class _AddUserButtonState extends State<AddUserButton> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    final SocketClient socketClient =
-                        Provider.of<SocketClient>(context, listen: false);
+                    final SocketClient socketClient = SocketClient();
+                    socketClient.setContext(context);
                     final Map<String, dynamic> userAdded = {
                       'position': _positionController.value.text,
                       'municipalityNumber':

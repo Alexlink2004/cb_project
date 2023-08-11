@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
@@ -42,6 +41,8 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
 
   @override
   void dispose() {
+    final SocketClient socketClient = SocketClient();
+    socketClient.setContext(context);
     // Dispose de los controladores para evitar memory leaks
     _positionController.dispose();
     _municipalityNumberController.dispose();
@@ -53,7 +54,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     _endDateController.dispose();
     _memberStatusController.dispose();
     _passwordController.dispose();
-    //  _socket.dispose();
+    socketClient.disposeSocket();
 
     super.dispose();
   }
@@ -193,8 +194,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
           actions: [
             TextButton(
               onPressed: () {
-                final SocketClient socketClient =
-                    Provider.of<SocketClient>(context, listen: false);
+                final SocketClient socketClient = SocketClient();
 
                 // Crear un mapa con los datos del usuario actualizado
                 Map<String, dynamic> updatedUserData = {
@@ -216,7 +216,7 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                 };
 
                 // Enviar los datos del usuario actualizado al servidor
-                // socketClient.socket.emit('client:updateuser', updatedUserData);
+                socketClient.emit('client:updateuser', updatedUserData);
 
                 // Cerrar el popup
                 Navigator.pop(context);
@@ -278,7 +278,7 @@ class UserCard extends StatelessWidget {
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      'Nombre: ${user.firstName} ${user.lastName}',
+                      '${user.firstName} ${user.lastName}',
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,

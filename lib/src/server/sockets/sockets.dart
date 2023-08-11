@@ -37,6 +37,7 @@ class SocketClient extends ChangeNotifier {
     _socket.on('server:updateuser', _onUpdateUser);
     _socket.on('server:adduser', _onAddUser);
     _socket.on('server:getusers', _onGetUsers);
+    _socket.on('server:deleteuser', _onDeleteUser);
     _socket.connect();
   }
   void setContext(BuildContext context) {
@@ -138,6 +139,23 @@ class SocketClient extends ChangeNotifier {
   void _onAddUser(data) {
     debugPrint("server:adduser");
     // Manejo de agregar usuario
+
+    users.add(User.fromJson(data));
+
+    debugPrint("$data");
+    _socket.emit('client:adduser', data);
+
+    _userStreamController.add(users); // Notify the stream listeners
+    notifyListeners();
+  }
+
+  void _onDeleteUser(data) {
+    String password = data; // Asume que los datos recibidos son la contraseña
+
+    _socket.emit("server:deleteuser", data);
+
+    // Actualiza el stream con la nueva lista de usuarios
+    _userStreamController.add(users);
   }
 
   void _onGetUsers(data) {
@@ -148,11 +166,13 @@ class SocketClient extends ChangeNotifier {
     notifyListeners();
   }
 
-  void dispose() {
-    debugPrint("dispose streamcontroller & socket");
+  void disposeSocket() {
     _userStreamController.close();
-    _socket.dispose();
-    super.dispose();
+    _socket.off('server:updateuser');
+    _socket.off('server:adduser');
+    _socket.off('server:loginerror');
+    _socket.off('server:server:login');
+    _socket.disconnect();
   }
 
   set users(data) {

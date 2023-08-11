@@ -21,7 +21,7 @@ class _LoginHandlerState extends State<LoginHandler> {
   void dispose() {
     super.dispose();
     final SocketClient socketClient = SocketClient();
-    socketClient.dispose();
+    socketClient.disposeSocket();
   }
 
   @override
