@@ -1,6 +1,5 @@
 import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/tv_summary/views/tv_summary_view.dart';
-
 import 'package:flutter/material.dart';
 
 import '../src/auth/voting_users/alderman/views/alderman_view.dart';
@@ -9,11 +8,11 @@ import '../src/auth/voting_users/secretary/views/secretary_view.dart';
 
 class DebugPanel extends StatelessWidget {
   const DebugPanel({Key? key}) : super(key: key);
-  final bool on = false;
+  final bool on = true;
 
   @override
   Widget build(BuildContext context) {
-    if (on){
+    if (on) {
       return Container(
         width: 250,
         height: 137,
@@ -80,8 +79,7 @@ class DebugPanel extends StatelessWidget {
           ],
         ),
       );
-    }
-    else{
+    } else {
       return SizedBox();
     }
   }

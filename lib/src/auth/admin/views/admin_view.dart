@@ -37,32 +37,6 @@ class AdminView extends StatelessWidget {
                   const SizedBox(
                     height: 30,
                   ),
-                  // Expanded(
-                  //   flex: 2,
-                  //   child: Column(
-                  //     children: [
-                  //       Container(
-                  //         width: 50,
-                  //         height: 50,
-                  //         decoration: BoxDecoration(
-                  //           color: Colors.black54,
-                  //           borderRadius: BorderRadius.circular(100),
-                  //         ),
-                  //         child: const Icon(
-                  //           Icons.person,
-                  //           size: 40,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
-                  //       const Text(
-                  //         "Admin",
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
                   const Expanded(
                     flex: 7,
                     child: Column(

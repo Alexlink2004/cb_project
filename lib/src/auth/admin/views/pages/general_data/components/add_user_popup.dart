@@ -1,6 +1,8 @@
+import 'package:cb_project/src/auth/admin/controllers/general_data_content_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../../../server/sockets/sockets.dart';
+import '../../../../../../server/models/user.dart';
 
 final List<String> positions = [
   'Secretario',
@@ -36,7 +38,6 @@ class _AddUserButtonState extends State<AddUserButton> {
   @override
   void initState() {
     super.initState();
-
     // Set default values for controllers
     _positionController.text = positions[0];
     _genderController.text = genders[0];
@@ -50,8 +51,6 @@ class _AddUserButtonState extends State<AddUserButton> {
 
   @override
   void dispose() {
-    final SocketClient socketClient = SocketClient();
-    socketClient.setContext(context);
     _positionController.dispose();
     _municipalityNumberController.dispose();
     _lastNameController.dispose();
@@ -62,12 +61,13 @@ class _AddUserButtonState extends State<AddUserButton> {
     _endDateController.dispose();
     _memberStatusController.dispose();
     _passwordController.dispose();
-    socketClient.disposeSocket();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final _generalDataContenController =
+        Provider.of<GeneralDataContentController>(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
@@ -97,7 +97,7 @@ class _AddUserButtonState extends State<AddUserButton> {
                               _firstNameController,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: _buildTextField(
                               'Apellido',
@@ -116,7 +116,7 @@ class _AddUserButtonState extends State<AddUserButton> {
                               positions,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: _buildTextField(
                               'Número de Municipio',
@@ -168,7 +168,7 @@ class _AddUserButtonState extends State<AddUserButton> {
                         _memberStatusController,
                         memberStatus,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       _buildTextField(
                         'Contraseña',
                         _passwordController,
@@ -180,8 +180,6 @@ class _AddUserButtonState extends State<AddUserButton> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    final SocketClient socketClient = SocketClient();
-                    socketClient.setContext(context);
                     final Map<String, dynamic> userAdded = {
                       'position': _positionController.value.text,
                       'municipalityNumber':
@@ -196,8 +194,13 @@ class _AddUserButtonState extends State<AddUserButton> {
                       'password': _passwordController.value.text,
                       'memberPhoto': '',
                     };
-                    socketClient.emit('client:adduser', userAdded);
-                    //socketClient.add(User.fromJson(userAdded));
+
+                    _generalDataContenController.addUser(
+                      User.fromJson(
+                        userAdded,
+                      ),
+                    );
+
                     Navigator.pop(context);
                   },
                   child: const Text('Guardar'),

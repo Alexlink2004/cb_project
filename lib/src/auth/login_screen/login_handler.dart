@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../server/sockets/sockets.dart';
 import 'login_screen.dart';
 
 class LoginHandler extends StatefulWidget {
@@ -20,19 +19,10 @@ class _LoginHandlerState extends State<LoginHandler> {
   @override
   void dispose() {
     super.dispose();
-    final SocketClient socketClient = SocketClient();
-    socketClient.disposeSocket();
   }
 
   @override
   Widget build(BuildContext context) {
-    final SocketClient socketClient = SocketClient();
-    socketClient.setContext(context);
-
-    if (true) {
-      return const LoginScreen();
-    } else {
-      return const LoadingScreen();
-    }
+    return const LoginScreen();
   }
 }

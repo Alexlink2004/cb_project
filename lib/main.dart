@@ -1,45 +1,55 @@
-import 'package:cb_project/src/auth/admin/controllers/general_data_controller.dart';
-import 'package:cb_project/src/auth/admin/controllers/page_controller.dart';
-import 'package:cb_project/src/auth/admin/views/admin_view.dart';
-import 'package:cb_project/src/auth/login_screen/login_controller.dart';
-import 'package:cb_project/src/auth/login_screen/login_handler.dart';
+import 'package:cb_project/providers.dart';
+import 'package:cb_project/routes.dart';
+import 'package:cb_project/src/auth/auth_controller.dart';
+import 'package:cb_project/src/auth/login_screen/loading_screen.dart';
 import 'package:cb_project/src/auth/login_screen/login_screen.dart';
-import 'package:cb_project/src/auth/tv_summary/views/tv_summary_view.dart';
-import 'package:cb_project/src/auth/voting_users/alderman/views/alderman_view.dart';
-import 'package:cb_project/src/auth/voting_users/president/views/president_view.dart';
-import 'package:cb_project/src/auth/voting_users/secretary/views/secretary_view.dart';
-import 'package:cb_project/src/server/sockets/sockets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   //Run app
   runApp(
-    const VotingSystemApp(),
+    const CoreApp(),
   );
 }
 
+class CoreApp extends StatelessWidget {
+  const CoreApp({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    //Inicia los providers hasta arriba del app
+    //Full screen
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    return MultiProvider(
+      providers: appProviders,
+      child: const VotingSystemApp(),
+    );
+  }
+}
+
 class VotingSystemApp extends StatelessWidget {
-  const VotingSystemApp({Key? key}) : super(key: key);
+  const VotingSystemApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AdminPageController(),
+    final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    final authController = Provider.of<AuthController>(context);
+    if (authController.isConnected) {
+      return MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.black,
         ),
-        ChangeNotifierProvider(
-          create: (_) => SocketClient(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => LoginController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => GeneralDataProvider(),
-        ),
-      ],
-      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        home: const LoginScreen(),
+        routes: routes,
+      );
+    } else {
+      return MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Colors.black,
@@ -47,17 +57,9 @@ class VotingSystemApp extends StatelessWidget {
         darkTheme: ThemeData.dark(),
         themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
-        initialRoute: LoginHandler.id,
-        routes: {
-          LoginHandler.id: (_) => const LoginHandler(),
-          AdminView.id: (_) => const AdminView(),
-          SecretaryView.id: (_) => const SecretaryView(),
-          AldermanView.id: (_) => const AldermanView(),
-          PresidentView.id: (_) => const PresidentView(),
-          TvSummaryView.id: (_) => const TvSummaryView(),
-          LoadingScreen.id: (_) => const LoadingScreen(),
-        },
-      ),
-    );
+        home: const LoadingScreen(),
+        routes: routes,
+      );
+    }
   }
 }

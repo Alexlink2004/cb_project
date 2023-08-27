@@ -17,34 +17,43 @@ class AdminPageTemplate extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: Container(
+        height: double.infinity,
         color: Colors.white,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          children: [
-            Column(
+        child: SizedBox(
+          height: 500,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   pageTitle,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   pageSubtitle,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
                   ),
                 ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      content,
+                    ],
+                  ),
+                )
               ],
             ),
-            SizedBox(height: 24),
-            content,
-          ],
+          ),
         ),
       ),
     );
