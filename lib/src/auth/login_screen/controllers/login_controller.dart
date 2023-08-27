@@ -9,9 +9,9 @@ class LoginController extends ChangeNotifier {
     return _password;
   }
 
-  set password(String data) {
+  void setPassword(String data) {
     _password = data;
-    _loginFieldController.text = data.toString();
+    _loginFieldController.text = data;
     notifyListeners();
   }
 

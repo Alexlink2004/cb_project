@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../server/models/user.dart';
 import '../../../../../../server/sockets/sockets.dart';
 import 'add_user_popup.dart';
 
 class GeneralDataWidget extends StatefulWidget {
-  //final List<dynamic> users; // Lista de usuarios desde el backend
-
-  //const GeneralDataWidget({Key? key}) : super(key: key);
-
   @override
   GeneralDataWidgetState createState() => GeneralDataWidgetState();
 }
 
 class GeneralDataWidgetState extends State<GeneralDataWidget> {
-  // late IO.Socket _socket;
-
-  //controllers
   final TextEditingController _positionController = TextEditingController();
   final TextEditingController _municipalityNumberController =
       TextEditingController();
@@ -33,14 +28,13 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
   void initState() {
     super.initState();
     final SocketClient socketClient = SocketClient();
-    socketClient.setContext(context);
+    // socketClient.setContext(context);
   }
 
   @override
   void dispose() {
     final SocketClient socketClient = SocketClient();
-    socketClient.setContext(context);
-    // Dispose de los controladores para evitar memory leaks
+    //socketClient.setContext(context);
     _positionController.dispose();
     _municipalityNumberController.dispose();
     _lastNameController.dispose();
@@ -52,84 +46,92 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     _memberStatusController.dispose();
     _passwordController.dispose();
     socketClient.disposeSocket();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final SocketClient socketClient = SocketClient();
-    socketClient.setContext(context);
+    // socketClient.setContext(context);
+    List<User> users = context.watch<List<User>>();
+    List<User> filteredList =
+        users.where((User user) => user.position != "Administrador").toList();
 
-    //List<User> users = socketClient.users;
+    if (filteredList.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AddUserButton(),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 300,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                ),
+                itemCount: users.length - 1,
+                itemBuilder: (context, index) {
+                  User user = filteredList[index];
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AddUserButton(),
-          const SizedBox(height: 16),
-          StreamBuilder<List<User>>(
-            stream: socketClient.userStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<User> users = snapshot.data!;
-
-                return Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Dos tarjetas por fila
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
-                    ),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.length - 1,
-                    itemBuilder: (context, index) {
-                      List<User> filteredList = users
-                          .where(
-                              (User user) => user.position != "Administrador")
-                          .toList();
-                      User user = filteredList[index];
-
-                      return UserCard(
-                        index: index,
-                        user: user,
-                        onEdit: (user, index) {
-                          // Show the popup to edit the user
-                          _showEditUserPopup(context, user, index);
-                        },
-                        onDelete: (index) {
-                          socketClient.emit(
-                            "client:deleteuser",
-                            {user.password},
-                          );
-                          debugPrint("client:deleteuser ${user.password}");
-                        },
-                      );
+                  return UserCard(
+                    index: index,
+                    user: user,
+                    onEdit: (user, index) {
+                      _showEditUserPopup(context, user, index);
                     },
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                // Handle error case
-                return Text("Error: ${snapshot.error}");
-              } else {
-                // Loading state
-                return const CircularProgressIndicator();
-              }
-            },
-          ),
-        ],
-      ),
-    );
+                    onDelete: (index) {
+                      socketClient.emit(
+                        "client:deleteuser",
+                        {user.password},
+                      );
+                      debugPrint("client:deleteuser ${user.password}");
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              "No hay usuarios aún",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text("agrega uno para empezar"),
+            const SizedBox(
+              height: 15,
+            ),
+            SvgPicture.asset(
+              'assets/illustrations/no_data.svg',
+              width: 100,
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            const AddUserButton(),
+          ],
+        ),
+      );
+    }
   }
 
   void _showEditUserPopup(BuildContext context, User user, int index) {
     _positionController.text = user.position!;
     _municipalityNumberController.text = user.municipalityNumber.toString();
     _lastNameController.text = user.lastName!;
-
     _firstNameController.text = user.firstName!;
     _genderController.text = user.gender!;
     _partyController.text = user.party!;
@@ -141,14 +143,12 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
     showDialog(
       context: context,
       builder: (context) {
-        // Aquí debes crear el contenido del popup con los textfields para editar el usuario
         return AlertDialog(
           title: Text('Editar Usuario'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Aquí los textfields para editar cada propiedad del usuario
                 TextFormField(
                   controller: _positionController,
                   decoration: InputDecoration(labelText: 'Cargo'),
@@ -161,7 +161,6 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                   controller: _lastNameController,
                   decoration: InputDecoration(labelText: 'Apellido'),
                 ),
-
                 TextFormField(
                   controller: _firstNameController,
                   decoration: InputDecoration(labelText: 'Nombre'),
@@ -198,7 +197,6 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
               onPressed: () {
                 final SocketClient socketClient = SocketClient();
 
-                // Crear un mapa con los datos del usuario actualizado
                 Map<String, dynamic> updatedUserData = {
                   "index": index,
                   "position": _positionController.text,
@@ -217,17 +215,14 @@ class GeneralDataWidgetState extends State<GeneralDataWidget> {
                   "password": _passwordController.text,
                 };
 
-                // Enviar los datos del usuario actualizado al servidor
                 socketClient.emit('client:updateuser', updatedUserData);
 
-                // Cerrar el popup
                 Navigator.pop(context);
               },
               child: Text('Guardar'),
             ),
             TextButton(
               onPressed: () {
-                // Cerrar el popup sin guardar cambios
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
