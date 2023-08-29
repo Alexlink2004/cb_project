@@ -1,21 +1,27 @@
 import 'package:cb_project/src/auth/admin/views/components/back_button.dart';
+import 'package:cb_project/src/server/sockets/voting_session_socket.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../server/models/voting_point.dart';
 import '../../controllers/auth_controller.dart';
 
 class VotingSystemTemplate extends StatelessWidget {
   final Widget body;
+  final List<VotingPoint> votingPoints;
 
   const VotingSystemTemplate({
     Key? key,
     // required this.role,
     required this.body,
+    required this.votingPoints,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Provider.of<AuthController>(context);
+    final VotingSessionSocket votingSessionSocket =
+        Provider.of<VotingSessionSocket>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       appBar: AppBar(
@@ -99,13 +105,15 @@ class VotingSystemTemplate extends StatelessWidget {
                   Expanded(
                     flex: 6,
                     child: ListView.builder(
-                      itemCount: 10,
+                      itemCount: votingPoints.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF171717),
+                              color: index == votingSessionSocket.currentIndex
+                                  ? Colors.white
+                                  : const Color(0xFF171717),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             width: double.infinity,
@@ -113,8 +121,11 @@ class VotingSystemTemplate extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 "Punto $index",
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color:
+                                      index != votingSessionSocket.currentIndex
+                                          ? Colors.white
+                                          : const Color(0xFF171717),
                                 ),
                               ),
                             ),

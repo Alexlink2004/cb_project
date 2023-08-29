@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../server/models/voting_point.dart';
+import '../../../../server/sockets/voting_session_socket.dart';
 import '../../components/voting_system_template.dart';
 
 class SecretaryView extends StatelessWidget {
@@ -8,7 +11,11 @@ class SecretaryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const VotingSystemTemplate(
+    final VotingSessionSocket votingSessionSocket =
+        Provider.of<VotingSessionSocket>(context);
+    List<VotingPoint> votingPoints = votingSessionSocket.votingPoints;
+    return VotingSystemTemplate(
+      votingPoints: votingPoints,
       body: Placeholder(),
     );
   }
