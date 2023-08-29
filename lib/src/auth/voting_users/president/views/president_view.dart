@@ -9,7 +9,6 @@ class PresidentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VotingSystemTemplate(
-      role: "Presidente",
       body: Placeholder(),
     );
   }

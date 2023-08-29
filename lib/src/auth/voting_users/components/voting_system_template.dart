@@ -1,18 +1,21 @@
 import 'package:cb_project/src/auth/admin/views/components/back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../controllers/auth_controller.dart';
 
 class VotingSystemTemplate extends StatelessWidget {
-  final String role;
   final Widget body;
 
   const VotingSystemTemplate({
     Key? key,
-    required this.role,
+    // required this.role,
     required this.body,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Provider.of<AuthController>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
       appBar: AppBar(
@@ -59,9 +62,21 @@ class VotingSystemTemplate extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
-              child: Text(
-                'Tipo de sesión: $role',
-                style: const TextStyle(fontSize: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Tipo de sesión: ${authController.userLoggedIn?.position} ',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Usuario: ${authController.userLoggedIn?.firstName} ${authController.userLoggedIn?.lastName}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
             ),
           ),

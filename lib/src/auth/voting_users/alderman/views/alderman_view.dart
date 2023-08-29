@@ -9,7 +9,6 @@ class AldermanView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VotingSystemTemplate(
-      role: "Regidor",
       body: Placeholder(),
     );
   }

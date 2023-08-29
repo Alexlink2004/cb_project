@@ -9,7 +9,6 @@ class SecretaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const VotingSystemTemplate(
-      role: "Secretario",
       body: Placeholder(),
     );
   }

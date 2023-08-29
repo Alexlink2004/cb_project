@@ -1,7 +1,6 @@
 import 'package:cb_project/providers.dart';
 import 'package:cb_project/routes.dart';
-import 'package:cb_project/src/auth/auth_controller.dart';
-import 'package:cb_project/src/auth/login_screen/loading_screen.dart';
+import 'package:cb_project/src/auth/controllers/auth_controller.dart';
 import 'package:cb_project/src/auth/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,31 +34,32 @@ class VotingSystemApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
     final authController = Provider.of<AuthController>(context);
-    if (authController.isConnected) {
-      return MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.black,
-        ),
-        navigatorKey: navigatorKey,
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        home: const LoginScreen(),
-        routes: routes,
-      );
-    } else {
-      return MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.black,
-        ),
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        home: const LoadingScreen(),
-        routes: routes,
-      );
-    }
+
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.black,
+      ),
+      navigatorKey: navigatorKey,
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      home: const LoginScreen(),
+      routes: routes,
+    );
   }
 }
+//
+// else {
+// return MaterialApp(
+// theme: ThemeData(
+// brightness: Brightness.light,
+// primaryColor: Colors.black,
+// ),
+// darkTheme: ThemeData.dark(),
+// themeMode: ThemeMode.system,
+// debugShowCheckedModeBanner: false,
+// home: const LoadingScreen(),
+// routes: routes,
+// );
+// }

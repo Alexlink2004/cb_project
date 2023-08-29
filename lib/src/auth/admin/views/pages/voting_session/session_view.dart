@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../components/admin_page_template.dart';
+import '../../components/admin_page_template.dart';
 
 class SessionView extends StatelessWidget {
   const SessionView({super.key});

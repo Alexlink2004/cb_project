@@ -42,7 +42,7 @@ class UsersApi extends ChangeNotifier {
     final dio = Dio();
     try {
       final response = await dio.get(
-        '${ApiConstants.apiRoute}/user',
+        '${ApiConstants.apiRoute}/users/user',
         queryParameters: {'password': password},
       );
 

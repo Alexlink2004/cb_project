@@ -90,9 +90,16 @@ class GeneralDataPageState extends State<GeneralDataPage> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            const Text("agrega uno para empezar"),
+            const Text(
+              "agrega uno para empezar",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
             const SizedBox(
               height: 15,
             ),

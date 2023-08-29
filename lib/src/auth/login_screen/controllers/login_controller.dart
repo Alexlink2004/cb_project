@@ -1,3 +1,4 @@
+import 'package:cb_project/src/auth/controllers/auth_controller.dart';
 import 'package:cb_project/src/server/api/users_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,11 @@ class LoginController extends ChangeNotifier {
   }
 
   void login(User userLogged, BuildContext context) {
+    final AuthController authController = Provider.of<AuthController>(
+      context,
+      listen: false,
+    );
+    authController.userLoggedIn = userLogged;
     String userRole = userLogged.position;
     switch (userRole) {
       case 'Administrador':
