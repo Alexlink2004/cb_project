@@ -51,14 +51,16 @@ class GeneralDataPageState extends State<GeneralDataPage> {
                 flex: 30,
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: size.width >= 800
-                        ? size.width <= 1100
+                    crossAxisCount: size.width >= 770
+                        ? size.width <= 1000
                             ? 2
-                            : 3
+                            : size.width <= 1700
+                                ? 3
+                                : 4
                         : 1,
                     crossAxisSpacing: 16.0,
                     mainAxisSpacing: 16.0,
-                    //  childAspectRatio: 4 / 3,
+                    childAspectRatio: 5 / 4,
                   ),
                   itemCount: users.length,
                   itemBuilder: (context, index) {

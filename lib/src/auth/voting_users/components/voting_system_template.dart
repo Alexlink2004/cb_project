@@ -120,7 +120,7 @@ class VotingSystemTemplate extends StatelessWidget {
                             height: 60,
                             child: Center(
                               child: Text(
-                                "Punto $index",
+                                "Punto ${index + 1}",
                                 style: TextStyle(
                                   color:
                                       index != votingSessionSocket.currentIndex

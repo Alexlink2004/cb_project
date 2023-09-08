@@ -19,4 +19,8 @@ class AuthController extends ChangeNotifier {
       return false;
     }
   }
+
+  bool hasInternet() {
+    return false;
+  }
 }

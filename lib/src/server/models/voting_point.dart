@@ -5,6 +5,7 @@ class VotingPoint {
   String requiredVotes;
   String votingForm;
   String subject;
+  String description;
   List<User> votesFor;
   List<User> votesAgainst;
   List<User> votesAbstain;
@@ -17,10 +18,12 @@ class VotingPoint {
     required this.votesFor,
     required this.votesAgainst,
     required this.votesAbstain,
+    required this.description,
   });
 
   factory VotingPoint.fromJson(Map<String, dynamic> json) {
     return VotingPoint(
+      description: json['description'],
       commision: json['commision'],
       requiredVotes: json['required_votes'],
       votingForm: json['voting_form'],
