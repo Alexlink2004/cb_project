@@ -237,7 +237,7 @@ class _TvSummaryViewState extends State<TvSummaryView> {
                                   .length,
                               (i) {
                                 return Text(
-                                  "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAgainst[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAbstain[i].lastName}"
+                                  "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAbstain[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAbstain[i].lastName}"
                                       .toString(),
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -257,7 +257,7 @@ class _TvSummaryViewState extends State<TvSummaryView> {
                   top: 10,
                   child: Text(
                     "Punto: ${votingSessionSocket.currentIndex}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 21,
                       color: Colors.black,
                     ),

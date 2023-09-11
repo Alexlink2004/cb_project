@@ -31,7 +31,7 @@ class VotingSessionApi extends ChangeNotifier {
       return VotingSession.fromJson(response.data);
     } else {
       debugPrint('Failed to get voting session: ${response.statusCode}');
-      return ApiConstants.vottingSessionError; // Replace with your error object
+      return ApiConstants.votingSessionError; // Replace with your error object
     }
   }
 
