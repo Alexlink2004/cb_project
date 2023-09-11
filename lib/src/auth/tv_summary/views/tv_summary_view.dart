@@ -6,6 +6,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../../server/api/api_constants.dart';
 import '../../../server/models/voting_point.dart';
 import '../../../server/sockets/voting_session_socket.dart';
+import '../components/voting_summary_chart.dart';
 
 class TvSummaryView extends StatefulWidget {
   static const String id = '/tvSummaryView';
@@ -54,20 +55,6 @@ class _TvSummaryViewState extends State<TvSummaryView> {
       }
     });
 
-    // socket.on('server:getsession', (data) {
-    //   Map<String, dynamic> sessionData =
-    //       data as Map<String, dynamic>; // Asegúrate de que 'data' es un Map
-    //   List<dynamic> jsonVotingPoints = sessionData['votingPoints']
-    //       as List<dynamic>; // Asegúrate de que 'votingPoints' es una lista
-    //   List<VotingPoint> votingPoints = jsonVotingPoints
-    //       .map((json) => VotingPoint.fromJson(json as Map<String, dynamic>))
-    //       .toList(); // Convierte cada elemento de la lista a un objeto VotingPoint
-    //   int currentIndex = sessionData['currentIndex']
-    //       as int; // Asegúrate de que 'currentIndex' es un entero
-    //
-    //   votingSessionSocket.updateData(votingPoints, currentIndex);
-    // });
-
     socket.on('server:next', (data) {
       votingSessionSocket.updateIndex(data as int);
     });
@@ -90,7 +77,7 @@ class _TvSummaryViewState extends State<TvSummaryView> {
   Widget build(BuildContext context) {
     final votingSessionSocket = Provider.of<VotingSessionSocket>(context);
     return Scaffold(
-      backgroundColor: Color(0xFF121212),
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 60,
@@ -143,185 +130,244 @@ class _TvSummaryViewState extends State<TvSummaryView> {
             borderRadius: BorderRadius.circular(30),
           ),
           //CONTENIDO:
-          child: SizedBox.expand(
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 10,
-                  top: 10,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: Padding(
+            padding: const EdgeInsets.all(64.0),
+            child: SizedBox.expand(
+              child: Stack(
+                children: [
+                  Column(
                     children: [
-                      Column(
-                        children: [
-                          const Text(
-                            "Votos A favor:",
-                            style: TextStyle(
-                              fontSize: 21,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Column(
-                            children: List.generate(
-                              votingSessionSocket
-                                  .votingPoints[
-                                      votingSessionSocket.currentIndex]
-                                  .votesFor
-                                  .length,
-                              (i) {
-                                return Text(
-                                  "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesFor[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesFor[i].lastName}"
-                                      .toString(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFEAE8EA),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: VotingSummaryPieChart(
+                                          votesFor: votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .votesFor
+                                              .length,
+                                          votesAgainst: votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .votesAgainst
+                                              .length,
+                                          votesAbstain: votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .votesAbstain
+                                              .length,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          const Text(
-                            "Votos en contra:",
-                            style: TextStyle(
-                              fontSize: 21,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Column(
-                            children: List.generate(
-                              votingSessionSocket
-                                  .votingPoints[
-                                      votingSessionSocket.currentIndex]
-                                  .votesAgainst
-                                  .length,
-                              (i) {
-                                return Text(
-                                  "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAgainst[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAgainst[i].lastName}"
-                                      .toString(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
+                                  const SizedBox(
+                                    height: 10,
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          const Text(
-                            "Votos en abstencion:",
-                            style: TextStyle(
-                              fontSize: 21,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Column(
-                            children: List.generate(
-                              votingSessionSocket
-                                  .votingPoints[
-                                      votingSessionSocket.currentIndex]
-                                  .votesAbstain
-                                  .length,
-                              (i) {
-                                return Text(
-                                  "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAbstain[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex + 0].votesAbstain[i].lastName}"
-                                      .toString(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
+                                  Expanded(
+                                    child: _buildTableOfUsers(
+                                      votingSessionSocket,
+                                    ),
                                   ),
-                                );
-                              },
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: SizedBox(
+                                height: double.infinity,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(
+                                        0xFFEAE8EA), // Fondo que resalta con el blanco
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(64.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .subject,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(
+                                                0xFF333333), // Color de texto oscuro
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .commision,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(
+                                                0xFF666666), // Color de texto medio
+                                          ),
+                                        ),
+                                        const SizedBox(height: 24),
+                                        Text(
+                                          votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .votingForm,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(
+                                                0xFF888888), // Color de texto claro
+                                          ),
+                                        ),
+                                        const SizedBox(height: 24),
+                                        Text(
+                                          votingSessionSocket
+                                              .votingPoints[votingSessionSocket
+                                                  .currentIndex]
+                                              .description,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(
+                                                0xFF888888), // Color de texto claro
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Positioned(
-                  right: 50,
-                  top: 10,
-                  child: Text(
-                    "Punto: ${votingSessionSocket.currentIndex}",
-                    style: const TextStyle(
-                      fontSize: 21,
-                      color: Colors.black,
+                  Positioned(
+                    right: 50,
+                    top: 10,
+                    child: Text(
+                      "Punto: ${votingSessionSocket.currentIndex + 1}",
+                      style: const TextStyle(
+                        fontSize: 21,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: 1,
-                  right: 1,
-                  top: 1,
-                  bottom: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        votingSessionSocket
-                            .votingPoints[votingSessionSocket.currentIndex + 0]
-                            .subject,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        votingSessionSocket
-                            .votingPoints[votingSessionSocket.currentIndex + 0]
-                            .commision,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        votingSessionSocket
-                            .votingPoints[votingSessionSocket.currentIndex + 0]
-                            .votingForm,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        votingSessionSocket
-                            .votingPoints[votingSessionSocket.currentIndex + 0]
-                            .description,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  _buildTableOfUsers(VotingSessionSocket votingSessionSocket,
+      {double borderRadius = 30}) {
+    return Container(
+      padding: const EdgeInsets.all(32.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEAE8EA), // Fondo que resalta con el blanco
+        borderRadius: BorderRadius.circular(
+          borderRadius,
+        ),
+      ),
+      child: Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        columnWidths: const {
+          0: FlexColumnWidth(1),
+          1: FlexColumnWidth(1),
+          2: FlexColumnWidth(1),
+        },
+        children: [
+          const TableRow(
+            children: [
+              Text(
+                "Votos A favor",
+                style: TextStyle(fontSize: 21, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                "Votos en contra",
+                style: TextStyle(fontSize: 21, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                "Votos en abstención",
+                style: TextStyle(fontSize: 21, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          TableRow(
+            children: [
+              Column(
+                children: List.generate(
+                  votingSessionSocket
+                      .votingPoints[votingSessionSocket.currentIndex]
+                      .votesFor
+                      .length,
+                  (i) => Text(
+                    "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesFor[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesFor[i].lastName}",
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ),
+              Column(
+                children: List.generate(
+                  votingSessionSocket
+                      .votingPoints[votingSessionSocket.currentIndex]
+                      .votesAgainst
+                      .length,
+                  (i) => Text(
+                    "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAgainst[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAgainst[i].lastName}",
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ),
+              Column(
+                children: List.generate(
+                  votingSessionSocket
+                      .votingPoints[votingSessionSocket.currentIndex]
+                      .votesAbstain
+                      .length,
+                  (i) => Text(
+                    "${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAbstain[i].firstName} ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAbstain[i].lastName}",
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
