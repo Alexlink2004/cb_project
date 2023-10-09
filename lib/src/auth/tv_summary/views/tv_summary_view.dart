@@ -224,8 +224,8 @@ class _TvSummaryViewState extends State<TvSummaryView> {
                                                   .currentIndex]
                                               .commision,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 18,
+                                          style: const TextStyle(
+                                            fontSize: 24,
                                             fontWeight: FontWeight.w600,
                                             color: Color(
                                                 0xFF666666), // Color de texto medio
@@ -238,8 +238,8 @@ class _TvSummaryViewState extends State<TvSummaryView> {
                                                   .currentIndex]
                                               .votingForm,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 16,
+                                          style: const TextStyle(
+                                            fontSize: 22,
                                             fontWeight: FontWeight.w400,
                                             color: Color(
                                                 0xFF888888), // Color de texto claro
@@ -252,8 +252,8 @@ class _TvSummaryViewState extends State<TvSummaryView> {
                                                   .currentIndex]
                                               .description,
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 16,
+                                          style: const TextStyle(
+                                            fontSize: 22,
                                             fontWeight: FontWeight.w400,
                                             color: Color(
                                                 0xFF888888), // Color de texto claro
@@ -311,17 +311,17 @@ class _TvSummaryViewState extends State<TvSummaryView> {
           const TableRow(
             children: [
               Text(
-                "Votos A favor",
+                "A favor",
                 style: TextStyle(fontSize: 21, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               Text(
-                "Votos en contra",
+                "En contra",
                 style: TextStyle(fontSize: 21, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               Text(
-                "Votos en abstención",
+                "Abstención",
                 style: TextStyle(fontSize: 21, color: Colors.black),
                 textAlign: TextAlign.center,
               ),

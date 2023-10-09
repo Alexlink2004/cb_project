@@ -6,6 +6,16 @@ import '../models/voting_point.dart';
 class VotingSessionSocket extends ChangeNotifier {
   List<VotingPoint> votingPoints = [];
   int currentIndex = 0;
+  bool _isActive = false;
+
+  bool get isActive {
+    return _isActive;
+  }
+
+  set isActive(bool data) {
+    _isActive = data;
+    notifyListeners();
+  }
 
   void updateData(List<VotingPoint> newVotingPoints, int newCurrentIndex) {
     votingPoints = newVotingPoints;
@@ -25,6 +35,11 @@ class VotingSessionSocket extends ChangeNotifier {
 
   void updateIndex(int index) {
     currentIndex = index;
+    notifyListeners();
+  }
+
+  void updateSession(bool data) {
+    isActive = data;
     notifyListeners();
   }
 

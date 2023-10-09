@@ -42,7 +42,7 @@ class VotingSystemApp extends StatelessWidget {
       ),
       navigatorKey: navigatorKey,
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       home: const LoginScreen(),
       routes: routes,

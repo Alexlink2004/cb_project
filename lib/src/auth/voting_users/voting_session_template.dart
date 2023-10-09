@@ -6,6 +6,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../server/api/api_constants.dart';
 import '../../server/models/voting_point.dart';
 import '../../server/sockets/voting_session_socket.dart';
+import '../admin/models/permission.dart';
 
 class VotingSessionScreenTemplate extends StatefulWidget {
   const VotingSessionScreenTemplate({super.key});
@@ -32,14 +33,16 @@ class _VotingSessionScreenTemplateState
     });
 
     socket.on('connect', (_) {
-      print('Connected');
+      debugPrint('Connected');
       socket.emit("client:getsession");
     });
 
     socket.on('server:updatesession', (data) {
-      print("Data received: $data");
-      print(
+      debugPrint("Data received: $data");
+      debugPrint(
           "Type of votingPoints: ${data['votingPoints'].runtimeType}"); // Imprime el tipo de data['votingPoints']
+
+      votingSessionSocket.isActive = data['isActive'] as bool;
 
       if (data['votingPoints'] is List) {
         final List<dynamic> points = data['votingPoints'] as List<dynamic>;
@@ -75,6 +78,16 @@ class _VotingSessionScreenTemplateState
       votingSessionSocket.updateIndex(data as int);
     });
 
+    socket.on('server:sessionstatus', (data) {
+      final isActive = data as bool;
+
+      // Puedes usar el valor de isActive para actualizar la interfaz de usuario en tu aplicación
+      if (isActive) {
+        votingSessionSocket.isActive = isActive;
+      } else {
+        votingSessionSocket.isActive = isActive;
+      }
+    });
     socket.connect();
   }
 
@@ -89,176 +102,304 @@ class _VotingSessionScreenTemplateState
   Widget build(BuildContext context) {
     final votingSessionSocket = Provider.of<VotingSessionSocket>(context);
     final authController = Provider.of<AuthController>(context);
-    return SizedBox(
-      child: Stack(
-        children: [
-          Positioned(
-            left: 20,
-            top: 10,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Votos a favor: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesFor.length} ',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  'Votos en contra: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAgainst.length} ',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  'Votos en abstencion: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAbstain.length} ',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 20,
-            top: 20,
-            child: Text(
-              'Página: ${votingSessionSocket.currentIndex + 1}',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 23,
-              ),
-            ),
-          ),
-          Positioned(
-            right: 10,
-            left: 10,
-            bottom: 10,
-            top: 10,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  votingSessionSocket
-                      .votingPoints[votingSessionSocket.currentIndex].subject,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  votingSessionSocket
-                      .votingPoints[votingSessionSocket.currentIndex].commision,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 64.0,
-                  ),
-                  child: Text(
-                    votingSessionSocket
-                        .votingPoints[votingSessionSocket.currentIndex]
-                        .description,
+    final Permission userPermission =
+        Permission.forRole(authController.userLoggedIn!.position);
+
+    if (votingSessionSocket.isActive) {
+      return SizedBox(
+        child: Stack(
+          children: [
+            Positioned(
+              left: 20,
+              top: 10,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Votos a favor: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesFor.length} ',
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 20,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 0,
-            left: 0,
-            bottom: 0,
-            child: Container(
-              height: 120,
-              width: double.infinity,
-              color: Colors.black,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Retroceder / Avanzar Sesión"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 32,
-                          ),
-                          IconButton(
-                            color: Colors.white,
-                            icon: const Icon(
-                              Icons.navigate_before,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              socket.emit("client:previouspoint");
-                              votingSessionSocket.nextPoint();
-                            },
-                          ),
-                          const SizedBox(
-                            width: 50,
-                          ),
-                          IconButton(
-                            color: Colors.white,
-                            icon: const Icon(
-                              Icons.navigate_next,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              socket.emit("client:nextpoint");
-                              votingSessionSocket.previousPoint();
-                            },
-                          ),
-                          const SizedBox(
-                            width: 32,
-                          ),
-                        ],
-                      ),
-                    ],
+                  Text(
+                    'Votos en contra: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAgainst.length} ',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
                   ),
-                  //Seccion de votacion
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Votación"),
-                      const SizedBox(
-                        height: 10,
+                  Text(
+                    'Votos en abstencion: ${votingSessionSocket.votingPoints[votingSessionSocket.currentIndex].votesAbstain.length} ',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 20,
+              top: 20,
+              child: Text(
+                'Página: ${votingSessionSocket.currentIndex + 1}',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 23,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 10,
+              left: 10,
+              bottom: 10,
+              top: 10,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    votingSessionSocket
+                        .votingPoints[votingSessionSocket.currentIndex].subject,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    votingSessionSocket
+                        .votingPoints[votingSessionSocket.currentIndex]
+                        .commision,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 64.0,
+                    ),
+                    child: Text(
+                      votingSessionSocket
+                          .votingPoints[votingSessionSocket.currentIndex]
+                          .description,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
                       ),
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          InkWell(
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              left: 0,
+              bottom: 0,
+              child: Container(
+                height: 120,
+                width: double.infinity,
+                color: Colors.black,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    userPermission.canAdvanceSession
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Retroceder / Avanzar Sesión"),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 32,
+                                  ),
+                                  IconButton(
+                                    color: Colors.white,
+                                    icon: const Icon(
+                                      Icons.navigate_before,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      socket.emit("client:previouspoint");
+                                      votingSessionSocket.nextPoint();
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 50,
+                                  ),
+                                  IconButton(
+                                    color: Colors.white,
+                                    icon: const Icon(
+                                      Icons.navigate_next,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      socket.emit("client:nextpoint");
+                                      votingSessionSocket.previousPoint();
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 32,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    //Seccion de votacion
+                    userPermission.canGiveVote
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Votación"),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors
+                                        .blue, // Cambia esto para el efecto splash
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Esto debe coincidir con el borderRadius del Container
+                                    onTap: () {
+                                      socket.emit(
+                                        "client:votefor",
+                                        authController.userLoggedIn?.toJson(),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors
+                                            .green, // Cambia esto para cambiar el color del botón
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      height: 64,
+                                      width: 128,
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons
+                                              .thumb_up), // Cambia esto para cambiar el icono
+                                          SizedBox(width: 8),
+                                          Text(
+                                              "A favor"), // Cambia esto para cambiar el texto
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors
+                                        .blue, // Cambia esto para el efecto splash
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Esto debe coincidir con el borderRadius del Container
+                                    onTap: () {
+                                      socket.emit(
+                                        "client:voteagainst",
+                                        authController.userLoggedIn?.toJson(),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors
+                                            .red, // Cambia esto para cambiar el color del botón
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      height: 64,
+                                      width: 128,
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons
+                                              .thumb_down), // Cambia esto para cambiar el icono
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "En contra",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors
+                                        .blue, // Cambia esto para el efecto splash
+                                    borderRadius: BorderRadius.circular(
+                                        15), // Esto debe coincidir con el borderRadius del Container
+                                    onTap: () {
+                                      socket.emit(
+                                        "client:voteabstain",
+                                        authController.userLoggedIn?.toJson(),
+                                      );
+                                      debugPrint(authController.userLoggedIn
+                                          ?.toJson()
+                                          .toString());
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors
+                                            .yellow, // Cambia esto para cambiar el color del botón
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      height: 64,
+                                      width: 128,
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.question_mark,
+                                          ), // Cambia esto para cambiar el icono
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Text(
+                                            "Abstención",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    userPermission.canEndSession ||
+                            userPermission.canStartSession
+                        ? InkWell(
                             splashColor: Colors
                                 .blue, // Cambia esto para el efecto splash
                             borderRadius: BorderRadius.circular(
                                 15), // Esto debe coincidir con el borderRadius del Container
                             onTap: () {
-                              socket.emit(
-                                "client:votefor",
-                                authController.userLoggedIn?.toJson(),
-                              );
+                              socket.emit("client:setsessionstatus", false);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -272,105 +413,113 @@ class _VotingSessionScreenTemplateState
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons
-                                      .thumb_up), // Cambia esto para cambiar el icono
+                                      .stop), // Cambia esto para cambiar el icono
                                   SizedBox(width: 8),
                                   Text(
-                                      "A favor"), // Cambia esto para cambiar el texto
+                                      "Pausar sesion"), // Cambia esto para cambiar el texto
                                 ],
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          InkWell(
-                            splashColor: Colors
-                                .blue, // Cambia esto para el efecto splash
-                            borderRadius: BorderRadius.circular(
-                                15), // Esto debe coincidir con el borderRadius del Container
-                            onTap: () {
-                              socket.emit(
-                                "client:voteagainst",
-                                authController.userLoggedIn?.toJson(),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors
-                                    .red, // Cambia esto para cambiar el color del botón
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              height: 64,
-                              width: 128,
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons
-                                      .thumb_down), // Cambia esto para cambiar el icono
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "En contra",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          InkWell(
-                            splashColor: Colors
-                                .blue, // Cambia esto para el efecto splash
-                            borderRadius: BorderRadius.circular(
-                                15), // Esto debe coincidir con el borderRadius del Container
-                            onTap: () {
-                              socket.emit(
-                                "client:voteabstain",
-                                authController.userLoggedIn?.toJson(),
-                              );
-                              debugPrint(authController.userLoggedIn
-                                  ?.toJson()
-                                  .toString());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors
-                                    .yellow, // Cambia esto para cambiar el color del botón
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              height: 64,
-                              width: 128,
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.question_mark,
-                                  ), // Cambia esto para cambiar el icono
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Text(
-                                    "Abstención",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                        ],
+                          )
+                        : SizedBox(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return SizedBox(
+        child: InactiveSessionScreen(
+          userPermission: userPermission,
+          onInitiateSession: () {
+            socket.emit("client:setsessionstatus", true);
+          },
+        ),
+      );
+    }
+  }
+}
+
+class InactiveSessionScreen extends StatelessWidget {
+  final Permission userPermission;
+  final Function()? onInitiateSession;
+
+  const InactiveSessionScreen({
+    Key? key,
+    required this.userPermission,
+    required this.onInitiateSession,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: const Color(0xFF121212),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            !userPermission.canStartSession
+                ? Column(
+                    children: [
+                      Text(
+                        "La sesión no está activa",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(height: 16),
+                      Text(
+                        "Contacta al administrador de la sesión para más información",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Text(
+                        "Puede iniciar la sesión en cualquier momento",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: onInitiateSession,
+                        icon: Icon(
+                          Icons
+                              .account_balance, // Cambia el icono a uno más formal
+                          color: Colors.black,
+                        ),
+                        label: Text(
+                          "Iniciar Sesión de Cabildo",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20, // Aumenta el tamaño del texto
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(40), // Botón más grande
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

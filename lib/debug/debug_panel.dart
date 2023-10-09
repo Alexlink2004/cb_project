@@ -1,10 +1,5 @@
-import 'package:cb_project/src/auth/admin/views/admin_view.dart';
 import 'package:cb_project/src/auth/tv_summary/views/tv_summary_view.dart';
 import 'package:flutter/material.dart';
-
-import '../src/auth/voting_users/alderman/views/alderman_view.dart';
-import '../src/auth/voting_users/president/views/president_view.dart';
-import '../src/auth/voting_users/secretary/views/secretary_view.dart';
 
 class DebugPanel extends StatelessWidget {
   const DebugPanel({Key? key}) : super(key: key);
@@ -18,55 +13,55 @@ class DebugPanel extends StatelessWidget {
         height: 137,
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Text(
-              'Debug Panel (No mostrar en release)',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.end,
-            ),
-            const SizedBox(height: 8),
+            // const Text(
+            //   'Debug Panel (No mostrar en release)',
+            //   style: TextStyle(
+            //     color: Colors.white,
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            //   textAlign: TextAlign.end,
+            // ),
+            // const SizedBox(height: 8),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     _buildButton(
+            //       context,
+            //       'Admin',
+            //       routeName: AdminView.id,
+            //       color: Colors.grey.withOpacity(0.1),
+            //     ),
+            //     _buildButton(
+            //       context,
+            //       'Presidente',
+            //       routeName: PresidentView.id,
+            //       color: Colors.grey.withOpacity(0.3),
+            //     ),
+            //   ],
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     _buildButton(
+            //       context,
+            //       'Secretario',
+            //       routeName: SecretaryView.id,
+            //       color: Colors.grey.withOpacity(0.5),
+            //     ),
+            //     _buildButton(
+            //       context,
+            //       'Regidor',
+            //       routeName: AldermanView.id,
+            //       color: Colors.grey.withOpacity(0.7),
+            //     ),
+            //   ],
+            // ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                _buildButton(
-                  context,
-                  'Admin',
-                  routeName: AdminView.id,
-                  color: Colors.grey.withOpacity(0.1),
-                ),
-                _buildButton(
-                  context,
-                  'Presidente',
-                  routeName: PresidentView.id,
-                  color: Colors.grey.withOpacity(0.3),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                _buildButton(
-                  context,
-                  'Secretario',
-                  routeName: SecretaryView.id,
-                  color: Colors.grey.withOpacity(0.5),
-                ),
-                _buildButton(
-                  context,
-                  'Regidor',
-                  routeName: AldermanView.id,
-                  color: Colors.grey.withOpacity(0.7),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildButton(
                   context,
