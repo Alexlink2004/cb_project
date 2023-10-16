@@ -42,7 +42,7 @@ class _VotingSessionScreenTemplateState
       debugPrint(
           "Type of votingPoints: ${data['votingPoints'].runtimeType}"); // Imprime el tipo de data['votingPoints']
 
-      votingSessionSocket.isActive = data['isActive'] as bool;
+      //votingSessionSocket.isActive = data['isActive'] as bool;
 
       if (data['votingPoints'] is List) {
         final List<dynamic> points = data['votingPoints'] as List<dynamic>;
@@ -56,19 +56,19 @@ class _VotingSessionScreenTemplateState
       }
     });
 
-    // socket.on('server:getsession', (data) {
-    //   Map<String, dynamic> sessionData =
-    //       data as Map<String, dynamic>; // Asegúrate de que 'data' es un Map
-    //   List<dynamic> jsonVotingPoints = sessionData['votingPoints']
-    //       as List<dynamic>; // Asegúrate de que 'votingPoints' es una lista
-    //   List<VotingPoint> votingPoints = jsonVotingPoints
-    //       .map((json) => VotingPoint.fromJson(json as Map<String, dynamic>))
-    //       .toList(); // Convierte cada elemento de la lista a un objeto VotingPoint
-    //   int currentIndex = sessionData['currentIndex']
-    //       as int; // Asegúrate de que 'currentIndex' es un entero
-    //
-    //   votingSessionSocket.updateData(votingPoints, currentIndex);
-    // });
+    socket.on('server:getsession', (data) {
+      Map<String, dynamic> sessionData =
+          data as Map<String, dynamic>; // Asegúrate de que 'data' es un Map
+      List<dynamic> jsonVotingPoints = sessionData['votingPoints']
+          as List<dynamic>; // Asegúrate de que 'votingPoints' es una lista
+      List<VotingPoint> votingPoints = jsonVotingPoints
+          .map((json) => VotingPoint.fromJson(json as Map<String, dynamic>))
+          .toList(); // Convierte cada elemento de la lista a un objeto VotingPoint
+      int currentIndex = sessionData['currentIndex']
+          as int; // Asegúrate de que 'currentIndex' es un entero
+
+      votingSessionSocket.updateData(votingPoints, currentIndex);
+    });
 
     socket.on('server:next', (data) {
       votingSessionSocket.updateIndex(data as int);
@@ -461,7 +461,7 @@ class InactiveSessionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             !userPermission.canStartSession
-                ? Column(
+                ? const Column(
                     children: [
                       Text(
                         "La sesión no está activa",
@@ -483,22 +483,22 @@ class InactiveSessionScreen extends StatelessWidget {
                   )
                 : Column(
                     children: [
-                      Text(
+                      const Text(
                         "Puede iniciar la sesión en cualquier momento",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       ElevatedButton.icon(
                         onPressed: onInitiateSession,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons
                               .account_balance, // Cambia el icono a uno más formal
                           color: Colors.black,
                         ),
-                        label: Text(
+                        label: const Text(
                           "Iniciar Sesión de Cabildo",
                           style: TextStyle(
                             color: Colors.black,
@@ -512,7 +512,7 @@ class InactiveSessionScreen extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.circular(40), // Botón más grande
                           ),
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 32, vertical: 16),
                         ),
                       ),

@@ -9,6 +9,7 @@ class VotingPoint {
   List<User> votesFor;
   List<User> votesAgainst;
   List<User> votesAbstain;
+  String id;
 
   VotingPoint({
     required this.commision,
@@ -19,10 +20,12 @@ class VotingPoint {
     required this.votesAgainst,
     required this.votesAbstain,
     required this.description,
+    required this.id,
   });
 
   factory VotingPoint.fromJson(Map<String, dynamic> json) {
     return VotingPoint(
+      id: json['_id'],
       description: json['description'],
       commision: json['commision'],
       requiredVotes: json['required_votes'],

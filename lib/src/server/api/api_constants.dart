@@ -1,5 +1,3 @@
-import 'package:cb_project/src/server/models/voting_session.dart';
-
 import '../models/user.dart';
 
 class ApiConstants {
@@ -20,11 +18,5 @@ class ApiConstants {
     position: 'error',
     startDate: 'error',
     id: 'error',
-  );
-  static VotingSession votingSessionError = VotingSession(
-    municipalityNumber: 'error',
-    location: 'error',
-    justifiedAbsences: [],
-    votingPoints: [],
   );
 }
