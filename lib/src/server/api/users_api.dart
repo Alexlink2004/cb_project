@@ -12,16 +12,19 @@ class UsersApi extends ChangeNotifier {
       '${ApiConstants.apiRoute}/users',
       data: user.toJson(),
     );
+    notifyListeners();
     try {
       if (response.statusCode == 201) {
         print('User created successfully');
         notifyListeners();
         return response;
       } else {
+        notifyListeners();
         print('Failed to create user: ${response.statusCode}');
         return response;
       }
     } catch (e) {
+      notifyListeners();
       print('Error while creating user: $e');
       return response;
     }

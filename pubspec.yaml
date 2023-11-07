@@ -21,6 +21,7 @@ dependencies:
   dio: ^5.3.2
   fl_chart: ^0.63.0
   uuid: ^4.1.0
+  excel: ^2.1.0
 
 
 dev_dependencies:

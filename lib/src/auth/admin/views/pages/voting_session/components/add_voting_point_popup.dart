@@ -139,7 +139,7 @@ class _AddVotingPointPopupState extends State<AddVotingPointPopup> {
           child: const Text('Cancelar'),
         ),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             Uuid uuid = const Uuid();
             String id = uuid.v4();
             VotingPoint newVotingPoint = VotingPoint(
@@ -153,8 +153,13 @@ class _AddVotingPointPopupState extends State<AddVotingPointPopup> {
               votesFor: [],
               id: id,
             );
-            votingPointController.createVotingPoint(newVotingPoint);
-            Navigator.of(context).pop(); // Cerrar la ventana emergente
+            await votingPointController
+                .createVotingPoint(newVotingPoint)
+                .then((value) {
+              debugPrint(value.toString());
+              Navigator.of(context).pop();
+            });
+            // Cerrar la ventana emergente
           },
           child: const Text('Guardar'),
         ),

@@ -1,7 +1,7 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:cb_project/src/server/models/voting_point.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import 'api_constants.dart';
 
 class VotingPointApi extends ChangeNotifier {
@@ -9,44 +9,56 @@ class VotingPointApi extends ChangeNotifier {
 
   List<VotingPoint> _votingPoints = [];
 
+  bool validateVotingPoint(VotingPoint votingPoint) {
+    if (votingPoint.commision.isEmpty ||
+        votingPoint.requiredVotes.isEmpty ||
+        votingPoint.votingForm.isEmpty ||
+        votingPoint.subject.isEmpty ||
+        votingPoint.description.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   // Create VotingPoint
   Future<Response> create(VotingPoint votingPoint) async {
+    if (!validateVotingPoint(votingPoint)) {
+      debugPrint('Failed to create voting point: Invalid fields');
+      notifyListeners();
+    }
+
     final response = await dio.post(
       '${ApiConstants.apiRoute}/voting-session/voting-points',
       data: votingPoint.toJson(),
     );
-    // Handle response...
-    return response;
+
+    try {
+      read();
+      if (response.statusCode == 201) {
+        debugPrint('Voting point created successfully');
+        notifyListeners();
+        return response;
+      } else {
+        debugPrint('Failed to create voting point: ${response.statusCode}');
+        notifyListeners();
+        return response;
+      }
+    } catch (e) {
+      debugPrint('Error while creating voting point: $e');
+      notifyListeners();
+      return response;
+    }
   }
 
-  // // Read all VotingPoints
-  // Future<List<VotingPoint>> read() async {
-  //   Response response =
-  //       await dio.get("${ApiConstants.apiRoute}/voting-session/voting-points");
-
-  //   final List<dynamic> responseData = response.data;
-
-  //   final List<VotingPoint> votingPoints =
-  //       responseData.map((json) => VotingPoint.fromJson(json)).toList();
-
-  //   // debugPrint("Inicio de impresion de datos");
-  //   // for (VotingPoint point in votingPoints) {
-  //   //   debugPrint("Datos de punto:");
-  //   //   debugPrint(point.subject);
-  //   //   debugPrint(point.description);
-  //   // }
-  //   // debugPrint("Final de impresion de datos");
-  //   notifyListeners();
-  //   return votingPoints;
-  // }
   Future<List<VotingPoint>> read() async {
-    if (_votingPoints.isEmpty) {
-      final response = await dio
-          .get("${ApiConstants.apiRoute}/voting-session/voting-points");
-      final List<dynamic> responseData = response.data;
-      _votingPoints =
-          responseData.map((json) => VotingPoint.fromJson(json)).toList();
-    }
+    // if (_votingPoints.isEmpty) {
+    //
+    // }
+    final response =
+        await dio.get("${ApiConstants.apiRoute}/voting-session/voting-points");
+    final List<dynamic> responseData = response.data;
+    _votingPoints =
+        responseData.map((json) => VotingPoint.fromJson(json)).toList();
     return _votingPoints;
   }
 
@@ -57,10 +69,7 @@ class VotingPointApi extends ChangeNotifier {
         '${ApiConstants.apiRoute}/voting-session/voting-points/$id',
         data: votingPoint.toJson(),
       );
-      // Handle response...
-    } catch (e) {
-      // Handle error...
-    }
+    } catch (e) {}
   }
 
   // Delete VotingPoint
@@ -69,6 +78,7 @@ class VotingPointApi extends ChangeNotifier {
     final response = await dio.delete(
       '${ApiConstants.apiRoute}/voting-session/voting-points/$id',
     );
+    read();
     return response;
   }
 }

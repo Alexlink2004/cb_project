@@ -42,13 +42,15 @@ class VotingPoint {
 
   Map<String, dynamic> toJson() {
     return {
+      '_id': id,
+      'description': description,
       'commision': commision,
       'required_votes': requiredVotes,
       'voting_form': votingForm,
       'subject': subject,
-      'votesFor': votesFor.map((i) => i.toJson()).toList(),
-      'votesAgainst': votesAgainst.map((i) => i.toJson()).toList(),
-      'votesAbstain': votesAbstain.map((i) => i.toJson()).toList(),
+      'votesFor': [],
+      'votesAgainst': [],
+      'votesAbstain': [],
     };
   }
 }
