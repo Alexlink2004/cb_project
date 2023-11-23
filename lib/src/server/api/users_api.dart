@@ -48,6 +48,7 @@ class UsersApi extends ChangeNotifier {
         '${ApiConstants.apiRoute}/users/user',
         queryParameters: {'password': password},
       );
+      debugPrint('getUserByPassword() response: ${response.data}');
 
       if (response.statusCode == 200) {
         return User.fromJson(response.data);

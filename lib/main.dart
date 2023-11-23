@@ -2,6 +2,7 @@ import 'package:cb_project/providers.dart';
 import 'package:cb_project/routes.dart';
 import 'package:cb_project/src/auth/controllers/auth_controller.dart';
 import 'package:cb_project/src/auth/login_screen/login_screen.dart';
+import 'package:cb_project/src/server/api/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class CoreApp extends StatelessWidget {
   const CoreApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    ApiConstants.initializeApiRoute();
     //Inicia los providers hasta arriba del app
     //Full screen
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);

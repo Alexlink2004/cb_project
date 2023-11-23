@@ -26,7 +26,6 @@ class _VotingSessionScreenTemplateState
     final votingSessionSocket =
         Provider.of<VotingSessionSocket>(context, listen: false);
 
-    // Inicializar el socket aquí
     socket = IO.io(ApiConstants.apiRoute, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': true,
@@ -42,8 +41,6 @@ class _VotingSessionScreenTemplateState
       debugPrint(
           "Type of votingPoints: ${data['votingPoints'].runtimeType}"); // Imprime el tipo de data['votingPoints']
 
-      //votingSessionSocket.isActive = data['isActive'] as bool;
-
       if (data['votingPoints'] is List) {
         final List<dynamic> points = data['votingPoints'] as List<dynamic>;
         final List<VotingPoint> votingPoints = points
@@ -57,15 +54,13 @@ class _VotingSessionScreenTemplateState
     });
 
     socket.on('server:getsession', (data) {
-      Map<String, dynamic> sessionData =
-          data as Map<String, dynamic>; // Asegúrate de que 'data' es un Map
-      List<dynamic> jsonVotingPoints = sessionData['votingPoints']
-          as List<dynamic>; // Asegúrate de que 'votingPoints' es una lista
+      Map<String, dynamic> sessionData = data as Map<String, dynamic>;
+      List<dynamic> jsonVotingPoints =
+          sessionData['votingPoints'] as List<dynamic>;
       List<VotingPoint> votingPoints = jsonVotingPoints
           .map((json) => VotingPoint.fromJson(json as Map<String, dynamic>))
-          .toList(); // Convierte cada elemento de la lista a un objeto VotingPoint
-      int currentIndex = sessionData['currentIndex']
-          as int; // Asegúrate de que 'currentIndex' es un entero
+          .toList();
+      int currentIndex = sessionData['currentIndex'] as int;
 
       votingSessionSocket.updateData(votingPoints, currentIndex);
     });
@@ -214,7 +209,9 @@ class _VotingSessionScreenTemplateState
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Retroceder / Avanzar Sesión"),
+                              const Text(
+                                "Retroceder / Avanzar Sesión",
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -230,7 +227,9 @@ class _VotingSessionScreenTemplateState
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      socket.emit("client:previouspoint");
+                                      socket.emit(
+                                        "client:previouspoint",
+                                      );
                                       votingSessionSocket.nextPoint();
                                     },
                                   ),
@@ -244,7 +243,9 @@ class _VotingSessionScreenTemplateState
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      socket.emit("client:nextpoint");
+                                      socket.emit(
+                                        "client:nextpoint",
+                                      );
                                       votingSessionSocket.previousPoint();
                                     },
                                   ),
@@ -256,12 +257,13 @@ class _VotingSessionScreenTemplateState
                             ],
                           )
                         : const SizedBox(),
-                    //Seccion de votacion
                     userPermission.canGiveVote
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Votación"),
+                              const Text(
+                                "Votación",
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -271,20 +273,24 @@ class _VotingSessionScreenTemplateState
                                     width: 16,
                                   ),
                                   InkWell(
-                                    splashColor: Colors
-                                        .blue, // Cambia esto para el efecto splash
+                                    splashColor: Colors.blue,
                                     borderRadius: BorderRadius.circular(
-                                        15), // Esto debe coincidir con el borderRadius del Container
+                                      15,
+                                    ),
                                     onTap: () {
+                                      final Map<String, dynamic>? userLoggedIn =
+                                          authController.userLoggedIn?.toJson();
+                                      debugPrint(
+                                        "userLoggedIn: ${userLoggedIn}",
+                                      );
                                       socket.emit(
                                         "client:votefor",
-                                        authController.userLoggedIn?.toJson(),
+                                        userLoggedIn,
                                       );
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors
-                                            .green, // Cambia esto para cambiar el color del botón
+                                        color: Colors.green,
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       height: 64,
@@ -293,11 +299,17 @@ class _VotingSessionScreenTemplateState
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(Icons
-                                              .thumb_up), // Cambia esto para cambiar el icono
+                                          Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.white,
+                                          ),
                                           SizedBox(width: 8),
                                           Text(
-                                              "A favor"), // Cambia esto para cambiar el texto
+                                            "A favor",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -306,10 +318,8 @@ class _VotingSessionScreenTemplateState
                                     width: 16,
                                   ),
                                   InkWell(
-                                    splashColor: Colors
-                                        .blue, // Cambia esto para el efecto splash
-                                    borderRadius: BorderRadius.circular(
-                                        15), // Esto debe coincidir con el borderRadius del Container
+                                    splashColor: Colors.blue,
+                                    borderRadius: BorderRadius.circular(15),
                                     onTap: () {
                                       socket.emit(
                                         "client:voteagainst",
@@ -328,11 +338,16 @@ class _VotingSessionScreenTemplateState
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(Icons
-                                              .thumb_down), // Cambia esto para cambiar el icono
+                                          Icon(
+                                            Icons.thumb_down,
+                                            color: Colors.white,
+                                          ), // Cambia esto para cambiar el icono
                                           SizedBox(width: 8),
                                           Text(
                                             "En contra",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -369,12 +384,16 @@ class _VotingSessionScreenTemplateState
                                         children: [
                                           Icon(
                                             Icons.question_mark,
-                                          ), // Cambia esto para cambiar el icono
+                                            color: Colors.white,
+                                          ),
                                           SizedBox(
                                             width: 8,
                                           ),
                                           Text(
                                             "Abstención",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -412,16 +431,22 @@ class _VotingSessionScreenTemplateState
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons
-                                      .stop), // Cambia esto para cambiar el icono
+                                  Icon(
+                                    Icons.stop,
+                                    color: Colors.white,
+                                  ), // Cambia esto para cambiar el icono
                                   SizedBox(width: 8),
                                   Text(
-                                      "Pausar sesion"), // Cambia esto para cambiar el texto
+                                    "Pausar sesion",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                   ],
                 ),
               ),
@@ -434,7 +459,10 @@ class _VotingSessionScreenTemplateState
         child: InactiveSessionScreen(
           userPermission: userPermission,
           onInitiateSession: () {
-            socket.emit("client:setsessionstatus", true);
+            socket.emit(
+              "client:setsessionstatus",
+              true,
+            );
           },
         ),
       );
@@ -471,7 +499,9 @@ class InactiveSessionScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(
+                        height: 16,
+                      ),
                       Text(
                         "Contacta al administrador de la sesión para más información",
                         style: TextStyle(

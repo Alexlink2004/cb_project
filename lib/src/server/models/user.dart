@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 
 class User {
@@ -30,34 +28,34 @@ class User {
     required this.startDate,
     required this.id,
   });
-  static List<User> generateRandomUsers(int count) {
-    final Random random = Random();
-    final List<User> users = [];
-    final positions = ['Administrador', 'Presidente', 'Secretario', 'Regidor'];
-
-    for (int i = 0; i < count; i++) {
-      final position = positions[random.nextInt(positions.length)];
-      final password = (random.nextInt(8999) + 1000).toString();
-      if (password == '1209') continue;
-
-      users.add(User(
-        position: position,
-        password: password,
-        endDate: '2040-01-01T00:00:00Z',
-        firstName: 'FirstName$i',
-        gender: 'Masculino',
-        lastName: 'LastName$i',
-        memberPhoto: 'photo$i',
-        memberStatus: 'Activo',
-        municipalityNumber: '0',
-        party: 'sin-definir',
-        startDate: '2023-07-18T00:00:00Z',
-        id: "error",
-      ));
-    }
-
-    return users;
-  }
+  // static List<User> generateRandomUsers(int count) {
+  //   final Random random = Random();
+  //   final List<User> users = [];
+  //   final positions = ['Administrador', 'Presidente', 'Secretario', 'Regidor'];
+  //
+  //   for (int i = 0; i < count; i++) {
+  //     final position = positions[random.nextInt(positions.length)];
+  //     final password = (random.nextInt(8999) + 1000).toString();
+  //     if (password == '1209') continue;
+  //
+  //     users.add(User(
+  //       position: position,
+  //       password: password,
+  //       endDate: '2040-01-01T00:00:00Z',
+  //       firstName: 'FirstName$i',
+  //       gender: 'Masculino',
+  //       lastName: 'LastName$i',
+  //       memberPhoto: 'photo$i',
+  //       memberStatus: 'Activo',
+  //       municipalityNumber: '0',
+  //       party: 'sin-definir',
+  //       startDate: '2023-07-18T00:00:00Z',
+  //       id: "error",
+  //     ));
+  //   }
+  //
+  //   return users;
+  // }
 
   factory User.fromJson(Map<String, dynamic> user) {
     return User(

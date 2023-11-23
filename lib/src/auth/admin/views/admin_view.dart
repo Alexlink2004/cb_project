@@ -1,6 +1,5 @@
 import 'package:cb_project/src/auth/admin/views/components/back_button.dart';
 import 'package:cb_project/src/auth/admin/views/pages/general_data/general_data_view.dart';
-import 'package:cb_project/src/auth/admin/views/pages/reports_view.dart';
 import 'package:cb_project/src/auth/admin/views/pages/voting_session/session_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +17,7 @@ class AdminView extends StatelessWidget {
     const List<Widget> pages = [
       GeneralDataView(),
       SessionView(),
-      ReportsView(),
+      //  ReportsView(),
     ];
     return Scaffold(
       backgroundColor: const Color(0xFF1B1B1B),
@@ -53,11 +52,11 @@ class AdminView extends StatelessWidget {
                           title: 'Sesión',
                           buttonIndex: 1,
                         ),
-                        VerticalMenuItem(
-                          icon: Icons.summarize,
-                          title: 'Ver Reportes',
-                          buttonIndex: 2,
-                        ),
+                        // VerticalMenuItem(
+                        //   icon: Icons.summarize,
+                        //   title: 'Ver Reportes',
+                        //   buttonIndex: 2,
+                        // ),
                       ],
                     ),
                   ),

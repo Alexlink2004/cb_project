@@ -1,8 +1,8 @@
 import 'package:cb_project/src/auth/controllers/auth_controller.dart';
-import 'package:cb_project/src/server/api/users_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../server/api/users_api.dart';
 import '../../../server/models/user.dart';
 import '../../admin/views/admin_view.dart';
 import '../../voting_users/alderman/views/alderman_view.dart';
@@ -29,7 +29,7 @@ class LoginController extends ChangeNotifier {
     final User userLogged = await userApi.getUserByPassword(password);
     String userRole = userLogged.position;
 
-    debugPrint(userLogged.password);
+    debugPrint("id del usuario: ${userLogged.id}");
 
     //END LOGIN PROCESS
     notifyListeners();
