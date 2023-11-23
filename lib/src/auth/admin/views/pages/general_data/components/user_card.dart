@@ -85,15 +85,15 @@ class UserCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Contraseña: ${user.password}',
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
+                  // Flexible(
+                  //   child: FittedBox(
+                  //     fit: BoxFit.scaleDown,
+                  //     child: Text(
+                  //       'Contraseña: ${user.password}',
+                  //       style: const TextStyle(color: Colors.black),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -108,24 +108,24 @@ class UserCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () => onEdit(user, index),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      'Editar',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ),
+                // ElevatedButton(
+                //   onPressed: () => onEdit(user, index),
+                //   style: ElevatedButton.styleFrom(
+                //     foregroundColor: Colors.black,
+                //     backgroundColor: Colors.white,
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(8.0),
+                //     ),
+                //   ),
+                //   child: const Padding(
+                //     padding:
+                //         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                //     child: Text(
+                //       'Editar',
+                //       style: TextStyle(fontSize: 16),
+                //     ),
+                //   ),
+                // ),
                 ElevatedButton(
                   onPressed: () => onDelete(index),
                   style: ElevatedButton.styleFrom(

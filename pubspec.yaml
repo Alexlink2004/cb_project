@@ -24,6 +24,7 @@ dependencies:
   excel: ^2.1.0
   connectivity_plus: ^5.0.2
   shared_preferences: ^2.0.15
+  url_launcher: ^6.1.14
 
 
 dev_dependencies:
