@@ -90,7 +90,7 @@ class DebugPanel extends StatelessWidget {
       height: 25,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: color,
+          backgroundColor: color,
           elevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,

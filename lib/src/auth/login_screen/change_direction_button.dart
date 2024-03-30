@@ -27,7 +27,7 @@ class ChangeServerButton extends StatelessWidget {
         }
       },
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
+        backgroundColor: Colors.white,
       ),
     );
   }

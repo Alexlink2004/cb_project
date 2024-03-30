@@ -39,6 +39,7 @@ class VotingSystemApp extends StatelessWidget {
 
     return MaterialApp(
       theme: ThemeData(
+        useMaterial3: false,
         brightness: Brightness.light,
         primaryColor: Colors.black,
       ),

@@ -1,4 +1,6 @@
+import 'package:cb_project/src/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../login_screen/login_handler.dart';
 
@@ -12,6 +14,7 @@ class _LogOutButtonState extends State<LogOutButton> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Provider.of<AuthController>(context);
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -28,9 +31,13 @@ class _LogOutButtonState extends State<LogOutButton> {
                   ElevatedButton(
                     onPressed: () {
                       // Acciones para cerrar sesión y cerrar pestañas
-                      Navigator.pop(context);
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginHandler.id);
+                      authController.logout(context).then((value) {
+                        if (value) {
+                          Navigator.pop(context);
+                          Navigator.of(context)
+                              .pushReplacementNamed(LoginHandler.id);
+                        }
+                      });
                     },
                     child: const Text("Sí"),
                   ),

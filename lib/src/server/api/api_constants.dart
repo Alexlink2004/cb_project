@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class ApiConstants {
-  static String apiRoute = "http://localhost:3001"; // Valor predeterminado
+  static String apiRoute = "http://192.168.1.89:3001"; // Valor predeterminado
+//  static String apiRoute = "http://10.101.10.122:3001"; // Valor predeterminado
 
   static Future initializeApiRoute() async {
     final prefs = await SharedPreferences.getInstance();

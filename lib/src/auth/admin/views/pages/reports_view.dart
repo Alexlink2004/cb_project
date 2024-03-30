@@ -75,7 +75,7 @@ class ReportsView extends StatelessWidget {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32.0,
                       vertical: 16.0,

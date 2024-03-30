@@ -99,12 +99,12 @@ class VotingSessionContent extends StatelessWidget {
                         fit: BoxFit.fill,
                         child: Row(
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () {
-                                // Logic for editing voting point
-                              },
-                            ),
+                            // IconButton(
+                            //   icon: const Icon(Icons.edit),
+                            //   onPressed: () {
+                            //     // Logic for editing voting point
+                            //   },
+                            // ),
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {

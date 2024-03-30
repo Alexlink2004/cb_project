@@ -537,7 +537,7 @@ class InactiveSessionScreen extends StatelessWidget {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(40), // Botón más grande

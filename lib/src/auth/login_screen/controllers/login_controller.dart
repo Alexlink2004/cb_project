@@ -60,7 +60,8 @@ class LoginController extends ChangeNotifier {
       case 'error':
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("No se encontró ningun usuario"),
+            content: Text(
+                "No se encontró ningun usuario o el usuario ya esta activo"),
           ),
         );
         break;
@@ -68,11 +69,13 @@ class LoginController extends ChangeNotifier {
       default:
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("No se encontró ningun usuario"),
+            content: Text(
+                "No se encontró ningun usuario o el usuario ya esta activo"),
           ),
         );
         break;
     }
+    _loginFieldController.text = '';
   }
 
   TextEditingController get loginFieldController {
