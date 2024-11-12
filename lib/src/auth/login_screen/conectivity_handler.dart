@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cb_project/src/auth/login_screen/change_direction_button.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,9 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
       final response = await _dio.get('${ApiConstants.apiRoute}/users');
       setState(() => _isServerReachable = response.statusCode == 200);
     } catch (_) {
-      setState(() => _isServerReachable = false);
+      setState(
+        () => _isServerReachable = false,
+      );
     }
   }
 
@@ -91,21 +94,31 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
   Widget _buildServerConnectionFailed() {
     return Scaffold(
       appBar: AppBar(title: const Text('Fallo de conexión al servidor')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.cloud_off, size: 100, color: Colors.grey),
-            const SizedBox(height: 20),
-            const Text('No se puede establecer conexión con el servidor.'),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
-              onPressed: () => _checkServerConnectivity(),
+      body: Stack(
+        children: [
+          const Positioned(
+            top: 0,
+            right: 0,
+            child: ChangeServerButton(),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.cloud_off, size: 100, color: Colors.grey),
+                const SizedBox(height: 20),
+                Text('Tu direccion de servidor es ${ApiConstants.apiRoute}'),
+                const Text('No se puede establecer conexión con el servidor.'),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Reintentar'),
+                  onPressed: () => _checkServerConnectivity(),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
